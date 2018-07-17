@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chicken Scratch Test Page</title>
+    <style> 
+      div {
+        display: flex;
+        justify-content: center;
+      }
+      canvas {
+        border: solid 1px black;
+        padding: 10px;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="da-canvas" height="800" width="600"></canvas>
+    </div>
+    <script src="characters.js"></script>
+    <script>
+      drawCharacters(document.getElementById('da-canvas'));
+    </script>
+  </body>
+</html>

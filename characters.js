@@ -318,6 +318,117 @@ const characters = [
     ]
   },
   {
+    name: 'O',
+    strokes: [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
+        start: Math.PI * 1.6,
+        end: Math.PI * 1.601,
+        direction: 'counter-clockwise'
+      }
+    ]
+  },
+  {
+    name: 'P',
+    strokes: [
+      {
+        type: 'line',
+        start: { x: 1, y: 1},
+        end: { x: 1, y: 49 }
+      },
+      {
+        type: 'line',
+        start: { x: 1, y: 1 },
+        end: { x: 25, y: 1 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
+        start: Math.PI * 1.5,
+        end: Math.PI * .5,
+        direction: 'clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 25, y: 25 },
+        end: { x: 1, y: 25 }
+      }
+    ]
+  },
+  {
+    name: 'Q',
+    strokes: [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
+        start: Math.PI * 1.6,
+        end: Math.PI * 1.601,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 25, y: 37 },
+        end: { x: 37, y: 49 }
+      }
+    ]
+  },
+  {
+    name: 'R',
+    strokes: [
+      {
+        type: 'line',
+        start: { x: 1, y: 1},
+        end: { x: 1, y: 49 }
+      },
+      {
+        type: 'line',
+        start: { x: 1, y: 1 },
+        end: { x: 25, y: 1 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
+        start: Math.PI * 1.5,
+        end: Math.PI * .5,
+        direction: 'clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 25, y: 25 },
+        end: { x: 1, y: 25 }
+      },
+      {
+        type: 'line',
+        start: { x: 19, y: 25 },
+        end: { x: 37, y: 49 }
+      }
+    ]
+  },
+  {
+    name: 'S',
+    strokes: [ 
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 37, y2: 25 },
+        start: Math.PI * 1.95,
+        end: Math.PI * 0.6,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 13, y: 24 },
+        end: { x: 25, y: 26 }
+      }, {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 25, x2: 37, y2: 49 },
+        start: Math.PI * 1.6,
+        end: Math.PI * .95,
+        direction: 'clockwise'
+      }
+    ]
+  },
+  {
     name: 'T',
     strokes: [
       {
@@ -328,6 +439,28 @@ const characters = [
       {
         type: 'line',
         start: { x: 1, y: 1 },
+        end: { x: 37, y: 1 }
+      }
+    ]
+  },
+  {
+    name: 'U',
+    strokes: [
+      {
+        type: 'line',
+        start: { x: 1, y: 1 },
+        end: { x: 1, y: 33 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
+        start: Math.PI,
+        end: 0,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 37, y: 33 },
         end: { x: 37, y: 1 }
       }
     ]

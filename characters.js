@@ -34,49 +34,74 @@ const characters = [
       {
         type: 'line',
         start: { x: 1, y: 1 },
-        end: { x: 19, y: 1 }
+        end: { x: 23, y: 1 }
       },
       {
-        type: 'arc',
-        start: { x: 1, y: 1 },
-        control: { x: 37, y: 1 },
-        end: { x: 37, y: 13 },
-        radius: 12
-      },
-      {
-        type: 'arc',
-        start: { x: 37, y: 13 },
-        control: { x: 37, y: 25 },
-        end: { x: 19, y: 25 },
-        radius: 12
+        type: 'ellipse',
+        bounds: { x1: 9, y1: 1, x2: 37, y2: 25 },
+        start: Math.PI * 1.5,
+        end: Math.PI * 0.5,
+        direction: 'clockwise'
       },
       {
         type: 'line',
-        start: { x: 19, y: 25 },
-        end: { x: 1, y: 25 }
+        start: { x: 23, y: 25 },
+        end: { x: 1, y: 25}
       },
       {
         type: 'line',
         start: { x: 1, y: 25 },
-        end: { x: 19, y: 25 }
-      },
-      { 
-        type: 'arc',
-        start: { x: 19, y: 25},
-        control: { x: 37, y: 25 },
-        end: { x: 37, y: 37 },
-        radius: 12
+        end: { x: 23, y: 25}
       },
       {
-        type: 'arc',
-        start: { x: 37, y: 37 },
-        control: { x: 37, y: 49 },
-        end: { x: 19, y: 49 },
-        radius: 12
+        type: 'ellipse',
+        bounds: { x1: 9, y1: 25, x2: 37, y2: 49 },
+        start: Math.PI * 1.5,
+        end: Math.PI * 0.5,
+        direction: 'clockwise'
       },
       {
         type: 'line',
-        start: { x: 29, y: 49 }, // x should be 19, but it looks weird
+        start: { x: 23, y: 49 },
+        end: { x: 1, y: 49 }
+      }
+    ]
+  },
+  {
+    name: 'C',
+    strokes: [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 41, y2: 49 },
+        start: Math.PI * 1.8,
+        end: Math.PI * .2,
+        direction: 'counter-clockwise'
+      }
+    ]
+  },
+  {
+    name: 'D',
+    strokes: [
+      {
+        type: 'line',
+        start: { x: 1, y: 1 },
+        end: { x: 1, y: 49 }
+      },
+      {
+        type: 'line',
+        start: { x: 1, y: 1 },
+        end: { x: 13, y: 1 }
+      },
+      { 
+        type: 'ellipse',
+        bounds: { x1: -11, y1: 1, x2: 37, y2: 49 },
+        start: Math.PI * 1.5,
+        end: Math.PI * 0.5,
+        direction: 'clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 13, y: 49 },
         end: { x: 1, y: 49 }
       }
     ]
@@ -127,6 +152,30 @@ const characters = [
     ]
   },
   {
+    name: 'G',
+    strokes: [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
+        start: Math.PI * 1.88,
+        end: Math.PI,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
+        start: Math.PI,
+        end: Math.PI * 0.05,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 37, y: 30 },
+        end: { x: 22, y: 30 }
+      }
+    ]
+  },
+  {
     name: 'H',
     strokes: [
       {
@@ -163,6 +212,28 @@ const characters = [
         type: 'line',
         start: { x: 1, y: 49 },
         end: { x: 37, y: 49 }
+      }
+    ]
+  },
+  {
+    name: 'J',
+    strokes: [
+      {
+        type: 'line',
+        start: { x: 37, y: 1 },
+        end: { x: 37, y: 33}
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
+        start: 0,
+        end: Math.PI,
+        direction: 'clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 1, y: 33 },
+        end: { x: 1, y: 28 }
       }
     ]
   },
@@ -382,6 +453,8 @@ function drawCharacters(canvasEl) {
         ctx.lineTo(stroke.end.x + xOffset,stroke.end.y + yOffset);
       } else if (stroke.type == 'arc') {
         ctx.arcTo(stroke.control.x + xOffset, stroke.control.y + yOffset, stroke.end.x + xOffset, stroke.end.y + yOffset, stroke.radius);
+      } else if (stroke.type == 'ellipse') {
+        drawEllipse(canvasEl, stroke.bounds.x1 + xOffset, stroke.bounds.y1 + yOffset, stroke.bounds.x2 + xOffset, stroke.bounds.y2 + yOffset, stroke.start, stroke.end, stroke.direction);
       }
     });  
   });
@@ -393,16 +466,17 @@ function drawCharacters(canvasEl) {
 
 // Modified from epistemex's comment on
 // stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
-function drawEllipse(x1, y1, x2, y2, start, end, direction) {
-  var radiusX = (x2 - x1) * 0.5,
+function drawEllipse(canvasEl, x1, y1, x2, y2, start, end, direction) {
+  var ctx = canvasEl.getContext('2d'),
+      radiusX = (x2 - x1) * 0.5,
       radiusY = (y2 - y1) * 0.5,
       centerX = x1 + radiusX,
       centerY = y1 + radiusY,
-      step = 0.01,
+      step = 0.025,
       a = start,
       pi2 = Math.PI * 2 - step;
 
-  ctx.beginPath();
+  ctx.lineWidth -= 1;
 
   ctx.moveTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
 
@@ -424,9 +498,6 @@ function drawEllipse(x1, y1, x2, y2, start, end, direction) {
       ctx.lineTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
     }
   }
-
-  // ctx.closePath();
-
-  ctx.strokeStyle = 'black';
-  ctx.stroke();
+  
+  ctx.lineWidth += 1;
 }

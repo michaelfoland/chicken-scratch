@@ -389,3 +389,44 @@ function drawCharacters(canvasEl) {
   ctx.closePath();
   ctx.stroke();
 }
+
+
+// Modified from epistemex's comment on
+// stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
+function drawEllipse(x1, y1, x2, y2, start, end, direction) {
+  var radiusX = (x2 - x1) * 0.5,
+      radiusY = (y2 - y1) * 0.5,
+      centerX = x1 + radiusX,
+      centerY = y1 + radiusY,
+      step = 0.01,
+      a = start,
+      pi2 = Math.PI * 2 - step;
+
+  ctx.beginPath();
+
+  ctx.moveTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
+
+  if (direction === 'clockwise') {
+    if (end < start) {
+      end += Math.PI * 2;
+    }
+    
+    for (; a < end; a += step) {
+      ctx.lineTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));  
+    }
+  // we'll just assume everything not clockwise is counter-clockwise
+  } else {
+      if (end > start) {
+        end -= Math.PI * 2;
+      }
+
+    for (; a > end ; a -= step) {
+      ctx.lineTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
+    }
+  }
+
+  // ctx.closePath();
+
+  ctx.strokeStyle = 'black';
+  ctx.stroke();
+}

@@ -2,10 +2,8 @@ const lineWidth = 2;
 const adjustment = 6;
 const color = '#2b8';
 
-const characters = [
-  {
-    name: 'A',
-    strokes: [
+const characters = {
+  A: [
       {
         type: 'line',
         start: { x: 19, y: 1 },
@@ -21,55 +19,53 @@ const characters = [
         start: { x: 11, y: 25 },
         end: { x: 29, y: 25 }
       }
-    ]
-  },
-  {
-    name: 'B',
-    strokes: [
+    ],
+  B: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
         end: { x: 1, y: 49 }
       },
-      {
-        type: 'line',
-        start: { x: 1, y: 1 },
-        end: { x: 23, y: 1 }
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 9, y1: 1, x2: 37, y2: 25 },
-        start: Math.PI * 1.5,
-        end: Math.PI * 0.5,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 23, y: 25 },
-        end: { x: 1, y: 25}
-      },
-      {
-        type: 'line',
-        start: { x: 1, y: 25 },
-        end: { x: 23, y: 25}
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 9, y1: 25, x2: 37, y2: 49 },
-        start: Math.PI * 1.5,
-        end: Math.PI * 0.5,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 23, y: 49 },
-        end: { x: 1, y: 49 }
-      }
-    ]
-  },
-  {
-    name: 'C',
-    strokes: [
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 1 },
+          end: { x: 23, y: 1 }
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 9, y1: 1, x2: 37, y2: 25 },
+          start: Math.PI * 1.5,
+          end: Math.PI * 0.5,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 23, y: 25 },
+          end: { x: 1, y: 25}
+        }
+      ],
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 25 },
+          end: { x: 23, y: 25}
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 9, y1: 25, x2: 37, y2: 49 },
+          start: Math.PI * 1.5,
+          end: Math.PI * 0.5,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 23, y: 49 },
+          end: { x: 1, y: 49 }
+        }
+      ]
+    ],
+  C: [
       {
         type: 'ellipse',
         bounds: { x1: 1, y1: 1, x2: 41, y2: 49 },
@@ -77,38 +73,34 @@ const characters = [
         end: Math.PI * .2,
         direction: 'counter-clockwise'
       }
-    ]
-  },
-  {
-    name: 'D',
-    strokes: [
+    ],
+  D: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
         end: { x: 1, y: 49 }
       },
-      {
-        type: 'line',
-        start: { x: 1, y: 1 },
-        end: { x: 13, y: 1 }
-      },
-      { 
-        type: 'ellipse',
-        bounds: { x1: -11, y1: 1, x2: 37, y2: 49 },
-        start: Math.PI * 1.5,
-        end: Math.PI * 0.5,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 13, y: 49 },
-        end: { x: 1, y: 49 }
-      }
-    ]
-  },
-  {
-    name: 'E',
-    strokes: [
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 1 },
+          end: { x: 13, y: 1 }
+        },
+        { 
+          type: 'ellipse',
+          bounds: { x1: -11, y1: 1, x2: 37, y2: 49 },
+          start: Math.PI * 1.5,
+          end: Math.PI * 0.5,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 13, y: 49 },
+          end: { x: 1, y: 49 }
+        }
+      ]
+    ],
+  E: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -129,11 +121,8 @@ const characters = [
         start: { x: 1, y: 49 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'F',
-    strokes: [
+    ],
+  F: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -149,35 +138,31 @@ const characters = [
         start: { x: 1, y: 25 },
         end: { x: 28, y: 25 }
       }
-    ]
-  },
-  {
-    name: 'G',
-    strokes: [
-      {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
-        start: Math.PI * 1.88,
-        end: Math.PI,
-        direction: 'counter-clockwise'
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
-        start: Math.PI,
-        end: Math.PI * 0.05,
-        direction: 'counter-clockwise'
-      },
+    ],
+  G: [
+      [
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
+          start: Math.PI * 1.88,
+          end: Math.PI,
+          direction: 'counter-clockwise'
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
+          start: Math.PI,
+          end: Math.PI * 0.05,
+          direction: 'counter-clockwise'
+        }
+      ],
       {
         type: 'line',
         start: { x: 37, y: 30 },
         end: { x: 22, y: 30 }
       }
-    ]
-  },
-  {
-    name: 'H',
-    strokes: [
+    ],
+  H: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -193,11 +178,8 @@ const characters = [
         start: { x: 37, y: 1 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'I',
-    strokes: [
+    ],
+  I: [
       {
         type: 'line',
         start: { x: 19, y: 1 },
@@ -213,33 +195,29 @@ const characters = [
         start: { x: 1, y: 49 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'J',
-    strokes: [
-      {
-        type: 'line',
-        start: { x: 37, y: 1 },
-        end: { x: 37, y: 33}
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
-        start: 0,
-        end: Math.PI,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 1, y: 33 },
-        end: { x: 1, y: 28 }
-      }
-    ]
-  },
-  {
-    name: 'K',
-    strokes: [
+    ],
+  J: [
+      [
+        {
+          type: 'line',
+          start: { x: 37, y: 1 },
+          end: { x: 37, y: 33}
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
+          start: 0,
+          end: Math.PI,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 1, y: 33 },
+          end: { x: 1, y: 28 }
+        }
+      ]
+    ],
+  K: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -255,11 +233,8 @@ const characters = [
         start: { x: 1, y: 25 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'L',
-    strokes: [
+    ],
+  L: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -270,11 +245,8 @@ const characters = [
         start: { x: 1, y: 49 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'M',
-    strokes: [
+    ],
+  M: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -295,11 +267,8 @@ const characters = [
         start: { x: 37, y: 1 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'N',
-    strokes: [
+    ],
+  N: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -315,11 +284,8 @@ const characters = [
         start: { x: 37, y: 1 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'O',
-    strokes: [
+    ],
+  O: [
       {
         type: 'ellipse',
         bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
@@ -327,38 +293,34 @@ const characters = [
         end: Math.PI * 1.601,
         direction: 'counter-clockwise'
       }
-    ]
-  },
-  {
-    name: 'P',
-    strokes: [
+    ],
+  P: [
       {
         type: 'line',
         start: { x: 1, y: 1},
         end: { x: 1, y: 49 }
       },
-      {
-        type: 'line',
-        start: { x: 1, y: 1 },
-        end: { x: 25, y: 1 }
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
-        start: Math.PI * 1.5,
-        end: Math.PI * .5,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 25, y: 25 },
-        end: { x: 1, y: 25 }
-      }
-    ]
-  },
-  {
-    name: 'Q',
-    strokes: [
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 1 },
+          end: { x: 25, y: 1 }
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
+          start: Math.PI * 1.5,
+          end: Math.PI * .5,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 25, y: 25 },
+          end: { x: 1, y: 25 }
+        }
+      ]
+    ],
+  Q: [
       {
         type: 'ellipse',
         bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
@@ -371,66 +333,61 @@ const characters = [
         start: { x: 25, y: 37 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'R',
-    strokes: [
+    ],
+  R: [
       {
         type: 'line',
         start: { x: 1, y: 1},
         end: { x: 1, y: 49 }
       },
-      {
-        type: 'line',
-        start: { x: 1, y: 1 },
-        end: { x: 25, y: 1 }
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
-        start: Math.PI * 1.5,
-        end: Math.PI * .5,
-        direction: 'clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 25, y: 25 },
-        end: { x: 1, y: 25 }
-      },
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 1 },
+          end: { x: 25, y: 1 }
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 13, y1: 1, x2: 37, y2: 25 },
+          start: Math.PI * 1.5,
+          end: Math.PI * .5,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 25, y: 25 },
+          end: { x: 1, y: 25 }
+        }
+      ],
       {
         type: 'line',
         start: { x: 19, y: 25 },
         end: { x: 37, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'S',
-    strokes: [ 
-      {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 1, x2: 37, y2: 25 },
-        start: Math.PI * 1.95,
-        end: Math.PI * 0.6,
-        direction: 'counter-clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 13, y: 24 },
-        end: { x: 25, y: 26 }
-      }, {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 25, x2: 37, y2: 49 },
-        start: Math.PI * 1.6,
-        end: Math.PI * .95,
-        direction: 'clockwise'
-      }
-    ]
-  },
-  {
-    name: 'T',
-    strokes: [
+    ],
+  S: [ 
+      [
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 1, x2: 37, y2: 25 },
+          start: Math.PI * 1.95,
+          end: Math.PI * 0.6,
+          direction: 'counter-clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 13, y: 24 },
+          end: { x: 25, y: 26 }
+        }, {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 25, x2: 37, y2: 49 },
+          start: Math.PI * 1.6,
+          end: Math.PI * .95,
+          direction: 'clockwise'
+        }
+      ]
+    ],
+  T: [
       {
         type: 'line',
         start: { x: 19, y: 1 },
@@ -441,33 +398,29 @@ const characters = [
         start: { x: 1, y: 1 },
         end: { x: 37, y: 1 }
       }
-    ]
-  },
-  {
-    name: 'U',
-    strokes: [
-      {
-        type: 'line',
-        start: { x: 1, y: 1 },
-        end: { x: 1, y: 33 }
-      },
-      {
-        type: 'ellipse',
-        bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
-        start: Math.PI,
-        end: 0,
-        direction: 'counter-clockwise'
-      },
-      {
-        type: 'line',
-        start: { x: 37, y: 33 },
-        end: { x: 37, y: 1 }
-      }
-    ]
-  },
-  {
-    name: 'V',
-    strokes: [
+    ],
+  U: [
+      [
+        {
+          type: 'line',
+          start: { x: 1, y: 1 },
+          end: { x: 1, y: 33 }
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 17, x2: 37, y2: 49 },
+          start: Math.PI,
+          end: 0,
+          direction: 'counter-clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 37, y: 33 },
+          end: { x: 37, y: 1 }
+        }
+      ]
+    ],
+  V: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -478,11 +431,8 @@ const characters = [
         start: { x: 19, y: 49 },
         end: { x: 37, y: 1 }
       }
-    ]
-  },
-  {
-    name: 'W',
-    strokes: [
+    ],
+  W: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -503,11 +453,8 @@ const characters = [
         start: { x: 28, y: 49 },
         end: { x: 37, y: 1}
       }
-    ]
-  },
-  {
-    name: 'X',
-    strokes: [
+    ],
+  X: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -518,11 +465,8 @@ const characters = [
         start: { x: 37, y: 1 },
         end: { x: 1, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'Y',
-    strokes: [
+    ],
+  Y: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -538,11 +482,8 @@ const characters = [
         start: { x: 19, y: 25 },
         end: { x: 19, y: 49 }
       }
-    ]
-  },
-  {
-    name: 'Z',
-    strokes: [
+    ],
+  Z: [
       {
         type: 'line',
         start: { x: 1, y: 1 },
@@ -559,8 +500,7 @@ const characters = [
         end: { x: 37, y: 49 }
       }
     ]
-  }
-];
+};
 
 // FOR TESTING BASIC CHARACTER CONSTRUCTION ONLY!
 // For the present, I'm just passing in 
@@ -571,37 +511,53 @@ function drawCharacters(canvasEl) {
   let ctx = canvasEl.getContext('2d');
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color; 
-  ctx.beginPath();
-  
-  let xOffset;
-  characters.forEach((character, index) => {
     
-    xOffset = (index % 10) * 50;
-    yOffset = Math.floor(index / 10) * 60;
-    
-    character.strokes.forEach(stroke => {
-      ctx.moveTo(stroke.start.x + xOffset, stroke.start.y + yOffset);
-      
-      if (stroke.type == 'line') {
-        ctx.lineTo(stroke.end.x + xOffset,stroke.end.y + yOffset);
-      } else if (stroke.type == 'arc') {
-        ctx.arcTo(stroke.control.x + xOffset, stroke.control.y + yOffset, stroke.end.x + xOffset, stroke.end.y + yOffset, stroke.radius);
-      } else if (stroke.type == 'ellipse') {
-        drawEllipse(canvasEl, stroke.bounds.x1 + xOffset, stroke.bounds.y1 + yOffset, stroke.bounds.x2 + xOffset, stroke.bounds.y2 + yOffset, stroke.start, stroke.end, stroke.direction);
-      }
-    });  
-  });
+  let offset = {};
+  let index = 0;
   
-  ctx.closePath();
-  ctx.stroke();
+  for(let char in characters) {
+    offset.x = (index % 10) * 50;
+    offset.y = Math.floor(index / 10) * 60;
+  
+    drawCharacter(ctx, characters[char], offset);
+    
+    index++;
+  }
 }
 
+function drawCharacter(context, character, offset) {
+  character.forEach(stroke => {
+    drawStroke(context, stroke, offset)   
+  });
+}
+
+function drawStroke(context, stroke, offset) {
+  context.beginPath();
+  
+  if (Array.isArray(stroke)) {
+    stroke.forEach(subStroke => {
+      draw(context, subStroke, offset);
+    })
+  } else {
+    draw(context, stroke, offset);
+  }
+    
+  context.stroke();
+}
+
+function draw(context, subject, offset) {
+  if (subject.type == 'line') {
+    context.moveTo(subject.start.x + offset.x, subject.start.y + offset.y);
+    context.lineTo(subject.end.x + offset.x,subject.end.y + offset.y);
+  } else if (subject.type == 'ellipse') {
+    drawEllipse(context, subject.bounds.x1 + offset.x, subject.bounds.y1 + offset.y, subject.bounds.x2 + offset.x, subject.bounds.y2 + offset.y, subject.start, subject.end, subject.direction);
+  }
+}
 
 // Modified from epistemex's comment on
 // stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
-function drawEllipse(canvasEl, x1, y1, x2, y2, start, end, direction) {
-  var ctx = canvasEl.getContext('2d'),
-      radiusX = (x2 - x1) * 0.5,
+function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
+  var radiusX = (x2 - x1) * 0.5,
       radiusY = (y2 - y1) * 0.5,
       centerX = x1 + radiusX,
       centerY = y1 + radiusY,
@@ -609,7 +565,7 @@ function drawEllipse(canvasEl, x1, y1, x2, y2, start, end, direction) {
       a = start,
       pi2 = Math.PI * 2 - step;
 
-  ctx.lineWidth -= 1;
+  ctx.lineWidth -= 1; // maybe update this in the future
 
   ctx.moveTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
 
@@ -632,5 +588,5 @@ function drawEllipse(canvasEl, x1, y1, x2, y2, start, end, direction) {
     }
   }
   
-  ctx.lineWidth += 1;
+  ctx.lineWidth += 1; // maybe update this in the future
 }

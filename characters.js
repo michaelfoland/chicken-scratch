@@ -544,6 +544,28 @@ function drawChickenScratchCharacters(canvasEl) {
   }
 }
 
+function drawChickenScratchWord(canvasEl, word) {
+  let ctx = canvasEl.getContext('2d');
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  
+  let offset = {};
+  let index = 0;
+  
+  word = word.toUpperCase();
+  
+  for (let char of word) {
+    if (char !== ' ') {
+      offset.x = (index % 11) * 45 + 10;
+      offset.y = Math.floor(index / 11) * 60 + 10;
+
+      drawChickenScratchCharacter(ctx, characters[char], offset);
+    }
+
+    index++;
+  }
+}
+
 function drawCharacter(context, character, offset) {
   character.forEach(stroke => {
     drawStroke(context, stroke, offset)   
@@ -594,15 +616,15 @@ function drawChickenScratchStroke(context, stroke, offset) {
   
   // rotate context
   // this should return a rotation within +/- 9 deg
-  let rotation = ((Math.PI / 10) * Math.random()) - Math.PI / 20;
+  let rotation = ((Math.PI / 15) * Math.random()) - Math.PI / 30;
   
   context.rotate(rotation);
   
   
   // translate context
   // NOT DOING THIS YET
-  let randomYTrans = 2 - Math.round((Math.random() * 4));
-  let randomXTrans = 2 - Math.round((Math.random() * 4));
+  let randomYTrans = 3 - Math.round((Math.random() * 6));
+  let randomXTrans = 3 - Math.round((Math.random() * 6));
   context.translate(randomXTrans, randomYTrans);
   
   // draw stroke

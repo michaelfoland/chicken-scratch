@@ -525,6 +525,25 @@ function drawCharacters(canvasEl) {
   }
 }
 
+function drawChickenScratchCharacters(canvasEl) {
+  let ctx = canvasEl.getContext('2d');
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  
+  let offset = {};
+  let index = 0;
+  
+
+  for (let char in characters) {
+      offset.x = (index % 10) * 50 + 10;
+      offset.y = Math.floor(index / 10) * 60 + 10;
+
+      drawChickenScratchCharacter(ctx, characters[char], offset);
+      
+      index++;
+  }
+}
+
 function drawCharacter(context, character, offset) {
   character.forEach(stroke => {
     drawStroke(context, stroke, offset)   
@@ -544,6 +563,93 @@ function drawStroke(context, stroke, offset) {
     
   context.stroke();
 }
+
+function drawChickenScratchCharacter(context, character, offset) {
+  character.forEach(stroke => {
+    drawChickenScratchStroke(context, stroke, offset)   
+  });  
+}
+
+function drawChickenScratchStroke(context, stroke, offset) {
+  console.log('in drawChickenScratchStroke, char offset =',offset);
+  
+  // save context object
+  context.save();
+
+  // translate context
+  let translateOffset = {
+    x: offset.x + (calculateStrokeXOffset(stroke)),
+    y: offset.y + (calculateStrokeYOffset(stroke))
+  }
+  
+  console.log('translateOffset =',translateOffset);
+  
+  context.translate(translateOffset.x, translateOffset.y);
+  
+  // adjust offset accordingly
+  let newOffset = {
+    x: 0 - (calculateStrokeXOffset(stroke)),
+    y: 0 - (calculateStrokeYOffset(stroke))
+  };
+  
+  // rotate context
+  // this should return a rotation within +/- 9 deg
+  let rotation = ((Math.PI / 10) * Math.random()) - Math.PI / 20;
+  
+  context.rotate(rotation);
+  
+  
+  // translate context
+  // NOT DOING THIS YET
+  let randomYTrans = 2 - Math.round((Math.random() * 4));
+  let randomXTrans = 2 - Math.round((Math.random() * 4));
+  context.translate(randomXTrans, randomYTrans);
+  
+  // draw stroke
+  drawStroke(context, stroke, newOffset);
+  
+  // restore context object
+  context.restore();
+}
+
+function calculateStrokeXOffset(stroke) {
+  return calculateStrokeOffset(stroke, 'x');
+}
+
+function calculateStrokeYOffset(stroke) {
+  return calculateStrokeOffset(stroke, 'y');
+}
+
+function calculateStrokeOffset(stroke, dimension) {
+
+  if (!Array.isArray(stroke)) {
+    if (stroke.type === 'line') {
+      return (stroke.start[dimension] + stroke.end[dimension]) / 2;
+    } else if (stroke.type === 'ellipse') {
+      return (stroke.bounds[dimension + '1'] + stroke.bounds[dimension + '2']) / 2;
+    }
+  } else {
+    
+    let all = [];
+    
+    stroke.forEach(subStroke => {
+      if (subStroke.type === 'line') {
+        all.push(subStroke.start[dimension]);
+        all.push(subStroke.end[dimension]);
+      } else if (subStroke.type === 'ellipse') {
+        all.push(subStroke.bounds[dimension + '1']);
+        all.push(subStroke.bounds[dimension + '2']);
+      }
+    });
+    
+    // NOTE: Spread operator necessary because
+    // Math.max() and Math.min() don't expect arrays
+    console.log('Math.max(...all) =',Math.max(...all));
+    console.log('Math.min(...all) =',Math.min(...all));
+    return (Math.max(...all) + Math.min(...all)) / 2;
+  }
+}
+
 
 function draw(context, subject, offset) {
   if (subject.type == 'line') {

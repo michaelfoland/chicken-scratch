@@ -1,7 +1,7 @@
 const lineWidth = 10;
 const adjustment = 6;
 const color = '#2b8';
-const lineCap = 'square';
+// const lineCap = 'square';
 // const shadowColor = '#175';
 // const shadowOffsetX = 12;
 // const shadowOffsetY = 6;
@@ -537,12 +537,11 @@ function drawChickenScratchCharacters(canvasEl, sizeRatio) {
   let ctx = canvasEl.getContext('2d');
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color;
-  ctx.lineCap = lineCap;
+  // ctx.lineCap = lineCap;
   
   let offset = {};
   let index = 0;
   let wraps = 0;
-  // let sizeRatio = .5;
 
   for (let char in characters) {
     wraps = Math.floor((index * (50 * sizeRatio)) / 500);

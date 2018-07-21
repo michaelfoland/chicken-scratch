@@ -1,6 +1,11 @@
-const lineWidth = 2;
+const lineWidth = 10;
 const adjustment = 6;
 const color = '#2b8';
+const lineCap = 'square';
+// const shadowColor = '#175';
+// const shadowOffsetX = 12;
+// const shadowOffsetY = 6;
+// const shadowBlur = 8;
 
 const characters = {
   A: [
@@ -511,7 +516,10 @@ function drawCharacters(canvasEl) {
   let ctx = canvasEl.getContext('2d');
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color; 
-    
+  ctx.lineCap = lineCap;
+  
+  
+  
   let offset = {};
   let index = 0;
   
@@ -525,22 +533,27 @@ function drawCharacters(canvasEl) {
   }
 }
 
-function drawChickenScratchCharacters(canvasEl) {
+function drawChickenScratchCharacters(canvasEl, sizeRatio) {
   let ctx = canvasEl.getContext('2d');
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color;
+  ctx.lineCap = lineCap;
   
   let offset = {};
   let index = 0;
-  
+  let wraps = 0;
+  // let sizeRatio = .5;
 
   for (let char in characters) {
-      offset.x = (index % 10) * 50 + 10;
-      offset.y = Math.floor(index / 10) * 60 + 10;
+    wraps = Math.floor((index * (50 * sizeRatio)) / 500);
+    
+    offset.x = (index * (50 * sizeRatio) % 500) + 10; // wrap at 500
+  
+    offset.y = (wraps * (70 * sizeRatio)) + 10;
 
-      drawChickenScratchCharacter(ctx, characters[char], offset);
-      
-      index++;
+    drawChickenScratchCharacter(ctx, characters[char], offset, sizeRatio);
+
+    index++;
   }
 }
 
@@ -548,6 +561,7 @@ function drawChickenScratchWord(canvasEl, word) {
   let ctx = canvasEl.getContext('2d');
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color;
+  
   
   let offset = {};
   let index = 0;
@@ -586,32 +600,75 @@ function drawStroke(context, stroke, offset) {
   context.stroke();
 }
 
-function drawChickenScratchCharacter(context, character, offset) {
+function drawChickenScratchCharacter(context, character, offset, sizeRatio) {
   character.forEach(stroke => {
-    drawChickenScratchStroke(context, stroke, offset)   
+    drawChickenScratchStroke(context, stroke, offset, sizeRatio)   
   });  
 }
 
-function drawChickenScratchStroke(context, stroke, offset) {
-  console.log('in drawChickenScratchStroke, char offset =',offset);
+function applySizeRatio(value, ratio) {
+  return ((value - 1) * ratio) + 1;
+}
+
+function resizeStroke(stroke, sizeRatio) {
+  if (Array.isArray(stroke)) {
+    stroke.forEach(subStroke => {
+      if (subStroke.type === 'line') {
+        resizeLine(subStroke,sizeRatio);
+      } else if (subStroke.type === 'ellipse') {
+        resizeEllipse(subStroke,sizeRatio);
+      }
+    });
+  } else {
+    if (stroke.type === 'line') {
+      resizeLine(stroke,sizeRatio);
+    } else if (stroke.type === 'ellipse') {
+      resizeEllipse(stroke,sizeRatio);
+    }
+  }
+}
+
+function resizeLine(line, sizeRatio) {
+  for (let value in line.start) {
+    line.start[value] = applySizeRatio(line.start[value], sizeRatio);
+  }
+
+  for (let value in line.end) {
+    line.end[value] = applySizeRatio(line.end[value], sizeRatio);
+  }        
+}
+
+function resizeEllipse(ellipse, sizeRatio) {
+  for (let value in ellipse.bounds) {
+    ellipse.bounds[value] = applySizeRatio(ellipse.bounds[value], sizeRatio);
+  }
+
+}
+function drawChickenScratchStroke(context, stroke, offset, sizeRatio) {
+  console.log('in drawChickenScratchStroke, stroke =',stroke);
+  
+  
+  let resizedStroke = JSON.parse(JSON.stringify(stroke));
+
+  resizeStroke(resizedStroke,sizeRatio);
+    
+  console.log('resizedStroke after =',resizedStroke);
   
   // save context object
   context.save();
 
   // translate context
   let translateOffset = {
-    x: offset.x + (calculateStrokeXOffset(stroke)),
-    y: offset.y + (calculateStrokeYOffset(stroke))
+    x: offset.x + (calculateStrokeXOffset(resizedStroke)),
+    y: offset.y + (calculateStrokeYOffset(resizedStroke))
   }
-  
-  console.log('translateOffset =',translateOffset);
   
   context.translate(translateOffset.x, translateOffset.y);
   
   // adjust offset accordingly
   let newOffset = {
-    x: 0 - (calculateStrokeXOffset(stroke)),
-    y: 0 - (calculateStrokeYOffset(stroke))
+    x: 0 - (calculateStrokeXOffset(resizedStroke)),
+    y: 0 - (calculateStrokeYOffset(resizedStroke))
   };
   
   // rotate context
@@ -622,13 +679,14 @@ function drawChickenScratchStroke(context, stroke, offset) {
   
   
   // translate context
-  // NOT DOING THIS YET
-  let randomYTrans = 3 - Math.round((Math.random() * 6));
-  let randomXTrans = 3 - Math.round((Math.random() * 6));
+  let base = 4;
+  
+  let randomYTrans = (base * sizeRatio) - Math.round((Math.random() * (2 * base * sizeRatio)));
+  let randomXTrans = (base * sizeRatio) - Math.round((Math.random() * (2 * base * sizeRatio)));
   context.translate(randomXTrans, randomYTrans);
   
   // draw stroke
-  drawStroke(context, stroke, newOffset);
+  drawStroke(context, resizedStroke, newOffset);
   
   // restore context object
   context.restore();
@@ -666,8 +724,6 @@ function calculateStrokeOffset(stroke, dimension) {
     
     // NOTE: Spread operator necessary because
     // Math.max() and Math.min() don't expect arrays
-    console.log('Math.max(...all) =',Math.max(...all));
-    console.log('Math.min(...all) =',Math.min(...all));
     return (Math.max(...all) + Math.min(...all)) / 2;
   }
 }
@@ -689,7 +745,7 @@ function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
       radiusY = (y2 - y1) * 0.5,
       centerX = x1 + radiusX,
       centerY = y1 + radiusY,
-      step = 0.025,
+      step = 0.03,
       a = start,
       pi2 = Math.PI * 2 - step;
 

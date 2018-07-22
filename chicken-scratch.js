@@ -1,8 +1,13 @@
 const defaultStyle = {
+  name: 'chicken-scratch',
+  camelName: 'chickenScratch',
+  maxRotation: 10,
+  maxTranslation: .10,
   size: 48, // not sure what value to use here; this is character height in px
-  color: 'black',
-  lineWidth: 5,
-  lineHeight: 1.2,
+  color: '#396',
+  lineWidth: 3,
+  lineHeight: 1.5,
+  letterSpacing: .4, // i.e, the space btw chars should be 10% (.1) of char width
   lineCap: 'square',
   shadow: { 
     draw: false,
@@ -13,34 +18,101 @@ const defaultStyle = {
   }
 };
 
-const userStyles = [];
 
+function applyStyleToContext(style, ctx) {
+  ctx.strokeStyle = style.color;
+  ctx.lineWidth = style.lineWidth;
+  ctx.lineCap = style.lineCap;
+  
+  if (style.shadow.draw) {
+    ctx.shadowColor = style.shadow.color;
+    ctx.shadowOffsetX = style.shadow.offsetX;
+    ctx.shadowOffsetY = style.shadow.offsetY;
+    ctx.shadowBlur = style.shadow.blur;
+  }
+}
+
+const styles = new Map();
+
+styles.set('chickenScratch',defaultStyle);
+
+let targetEls = {}; 
+let targetElsInnerHTML = new Map();
+let targetElsTextContent = new Map();
+
+// This function will replace the innerHTML of every .chicken-scratch
+// element with a canvas element holding the original textContent of the element
 function apply() {
-  let targetEls = {};
-  
-  // Fetch all els with .chicken-scratch
-  targetEls.chickenScratch = Array.from(document.getElementsByClassName('chicken-scratch'));
-  
-  // Fetch all els with user's custom classes
-  userStyles.forEach(style => {
+  // 1 FETCH ALL ELEMENTS TO TARGET
+  // Fetch all els with .chicken-scratch OR a user custom class
+  styles.forEach(style => {
     targetEls[style.camelName] = Array.from(document.getElementsByClassName(style.name));
-  })
+  });
+  
+  // 2 PROCESS EACH ELEMENT
+  let index;
+  
+  // go through each style
+  for (let styleGroup in targetEls) {
+    index = 0;
+    
+    // go through each element bearing that style
+    targetEls[styleName].forEach(element => {
+      
+      // Give element ID if necessary
+      if (!element.id) {
+        element.id = styleName + '-' + index;
+        index++;
+      }
+      
+      // Store element's innerHTML in map (for future retrieval, if necessary)
+      targetElsInnerHTML.set(element.id,element.innerHTML);
+      
+      // Store element's textContent in map
+      targetElsTextContent.set(element.id,element.textContent);
+      
+      // Empty out element's innerHTML
+      element.innerHTML = '';
+      
+      // Create new canvas element
+      let newCanvas = document.createElement('canvas');
+  
+      // Set canvas height & width equal to that of parent's client height
+      newCanvas.height = element.clientHeight;
+      newCanvas.width = element.clientWidth;
+      
+      drawText(newCanvas, styles.get(styleName), targetElsTextContent.get(element.id));
+      
+      
+      
+    })
+  }
+  
+  
 }
 
 
-// FOR TESTING BASIC CHARACTER CONSTRUCTION ONLY!
-// For the present, I'm just passing in 
-// a canvas element.  In the final version,
-// the module will create its own canvas 
-// element to replace the original element
-// Eventually these will all be private.
-function drawCharacters(canvasEl) {
+
+
+
+function drawText(canvasEl, style, text) {
+  // Get context and set its style
   let ctx = canvasEl.getContext('2d');
-  ctx.lineWidth = defaultStyle.lineWidth;
-  ctx.strokeStyle = defaultStyle.color; 
-  // ctx.lineCap = lineCap;
+  applyStylesToContext(style, ctx);
   
+  // Split text into words
+  let words = text.split(/ +/);
+
+  let baseOffsetX = 0; // leave enough space so that a letter translated and rotated to the left as much as possible will not be clipped
+  let baseOffsetY = 0; // leave enough space so that a letter translated and rotated upward as much as possible will not be clipped
   
+  // Go through each word
+  words.forEach(word => {
+    
+    
+    
+    // Determine offset 
+  })
   
   let offset = {};
   let index = 0;
@@ -55,31 +127,8 @@ function drawCharacters(canvasEl) {
   }
 }
 
-function drawChickenScratchCharacters(canvasEl, sizeRatio) {
-  let ctx = canvasEl.getContext('2d');
-  ctx.lineWidth = defaultStyle.lineWidth;
-  ctx.strokeStyle = defaultStyle.color;
-  ctx.lineCap = defaultStyle.lineCap;
-  ctx.shadowColor = defaultStyle.shadow.color;
-  ctx.shadowBlur = defaultStyle.shadow.blur;
-  ctx.shadowOffsetX = defaultStyle.shadow.offsetX;
-  ctx.shadowOffsetY = defaultStyle.shadow.offsetY;
-  
-  let offset = {};
-  let index = 0;
-  let wraps = 0;
-
-  for (let char in characters) {
-    wraps = Math.floor((index * (50 * sizeRatio)) / 500);
-    
-    offset.x = (index * (50 * sizeRatio) % 500) + 10; // wrap at 500
-  
-    offset.y = (wraps * (70 * sizeRatio)) + 10;
-
-    drawChickenScratchCharacter(ctx, characters[char], offset, sizeRatio);
-
-    index++;
-  }
+function getWordWidth(word, style) {
+  return word.length * (style.size * .75) + ((word.length - 1) * style.size * .75 * style.letterSpacing);
 }
 
 function drawChickenScratchWord(canvasEl, word) {
@@ -125,9 +174,9 @@ function drawStroke(context, stroke, offset) {
   context.stroke();
 }
 
-function drawChickenScratchCharacter(context, character, offset, sizeRatio) {
+function drawChickenScratchCharacter(context, character, offset, style) {
   character.forEach(stroke => {
-    drawChickenScratchStroke(context, stroke, offset, sizeRatio)   
+    drawChickenScratchStroke(context, stroke, offset, style)   
   });  
 }
 
@@ -169,16 +218,11 @@ function resizeEllipse(ellipse, sizeRatio) {
   }
 
 }
-function drawChickenScratchStroke(context, stroke, offset, sizeRatio) {
-  console.log('in drawChickenScratchStroke, stroke =',stroke);
-  
-  
+function drawChickenScratchStroke(context, stroke, offset, style) {
   let resizedStroke = JSON.parse(JSON.stringify(stroke));
 
-  resizeStroke(resizedStroke,sizeRatio);
-    
-  console.log('resizedStroke after =',resizedStroke);
-  
+  resizeStroke(resizedStroke,style.size / 48);
+
   // save context object
   context.save();
 
@@ -198,16 +242,15 @@ function drawChickenScratchStroke(context, stroke, offset, sizeRatio) {
   
   // rotate context
   // this should return a rotation within +/- 9 deg
-  let rotation = ((Math.PI / 15) * Math.random()) - Math.PI / 30;
+  let rotation = (degToRad(style.maxRotation * 2) * Math.random()) - (degToRad(style.maxRotation));
   
   context.rotate(rotation);
   
   
   // translate context
-  let base = 4;
-  
-  let randomYTrans = (base * sizeRatio) - Math.round((Math.random() * (2 * base * sizeRatio)));
-  let randomXTrans = (base * sizeRatio) - Math.round((Math.random() * (2 * base * sizeRatio)));
+    
+  let randomYTrans = (style.maxTranslation * style.size * 2) - (Math.random() * (style.maxTranslation * style.size));
+  let randomXTrans = (style.maxTranslation * style.size * 1.5) - (Math.random() * (style.maxTranslation * style.size * .75));
   context.translate(randomXTrans, randomYTrans);
   
   // draw stroke
@@ -299,3 +342,79 @@ function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
   
   ctx.lineWidth += 1; // maybe update this in the future
 }
+
+
+function degToRad(deg) {
+  return (deg / 360) * Math.PI * 2;
+}
+
+// FOLLOWING 2 FUNCTIONS ARE ONLY FOR TESTING 
+// BASIC CHARACTER CONSTRUCTION & APPEARANCE!
+function drawAllChickenScratchCharacters(canvasEl, style) {
+  console.log('in drawAllChickenScratchCharacters; canvasEl.width =',canvasEl.width);
+  
+  let ctx = canvasEl.getContext('2d');
+
+  applyStyleToContext(style, ctx);
+
+  // Calculate base X & Y offsets based on size, maxRotation, maxTranslation, letterSpacing and lineHeight
+  let baseOffsetX = (Math.sin(degToRad(style.maxRotation)) * (style.size / 2)) + (style.maxTranslation * style.size * .75) + (style.letterSpacing * style.size * .75);
+  let baseOffsetY = (Math.sin(degToRad(style.maxRotation)) * ((style.size * .75) / 2)) + (style.maxTranslation * style.size) + (((style.lineHeight - 1) / 2) * style.size);
+  
+  console.log('baseOffsetX =',baseOffsetX);
+  console.log('baseOffsetY =',baseOffsetY);
+  
+  
+  
+  let offset = { 
+    x: baseOffsetX,
+    y: baseOffsetY
+  };
+  
+  let index = 0;
+  let currentLine = 1;
+  let currentChar = 0;
+
+  for (let char in characters) {
+    currentChar++;
+    
+    console.log('width after new char =',baseOffsetX + ((style.size * (1 + style.letterSpacing)) * currentChar))
+    console.log('canvasEl.width - baseOffsetX = ',canvasEl.width - baseOffsetX);
+    
+    if (baseOffsetX + ((style.size * .75 * (1 + style.letterSpacing)) * currentChar) > canvasEl.width - baseOffsetX) {
+      currentLine++;
+      currentChar = 1;
+    }
+    
+    offset.x = baseOffsetX + ((style.size * .75 * (1 + style.letterSpacing)) * (currentChar - 1));
+    offset.y = baseOffsetY + ((currentLine - 1) * (style.size * style.lineHeight)) + (style.size * (1 + ((style.lineHeight - 1) / 2)));
+    
+    console.log('offset.x =',offset.x);
+    console.log('offset.y =',offset.y);
+    
+
+    drawChickenScratchCharacter(ctx, characters[char], offset, style);
+
+    index++;
+  }
+}
+
+function drawAllCharacters(canvasEl) {
+  let ctx = canvasEl.getContext('2d');
+  ctx.lineWidth = defaultStyle.lineWidth;
+  ctx.strokeStyle = defaultStyle.color; 
+  // ctx.lineCap = lineCap;
+
+  let offset = {};
+  let index = 0;
+  
+  for(let char in characters) {
+    offset.x = (index % 10) * 50;
+    offset.y = Math.floor(index / 10) * 60;
+  
+    drawCharacter(ctx, characters[char], offset);
+    
+    index++;
+  }
+}
+

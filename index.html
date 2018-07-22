@@ -10,14 +10,12 @@
       }
       canvas {
         border: solid 1px black;
-        padding: 10px;
-        
       }
     </style>
   </head>
   <body>
     <div>
-      <canvas id="da-canvas" height="800" width="600"></canvas>
+      <canvas id="da-canvas" height="800" width="400"></canvas>
     </div>
     <script src="characters.js"></script>
     <script src="chicken-scratch.js"></script>
@@ -25,7 +23,7 @@
       let canvas = document.getElementById('da-canvas');
       
       // drawChickenScratchCharacters(canvas, 2);
-      drawChickenScratchCharacters(canvas,1.3);
+      drawAllChickenScratchCharacters(canvas,defaultStyle);
       
       
       /*

@@ -9,23 +9,35 @@
         justify-content: center;
       }
       canvas {
-        border: solid 1px black;
+        /* border: solid 1px black; */
+      }
+      
+      #the-div {
+        max-width: 800px;
       }
     </style>
   </head>
   <body>
-    <div>
-      <canvas id="da-canvas" height="800" width="400"></canvas>
-    </div>
+    <p class="chicken-scratch">I am the default style, thirty two point</p>
+    <p style="font-size: 28px; font-family: monospace;">I AM JUST NORMAL TEXT 28PX</p>
+    <p class="construction-paper">I am construction paper size seventy two</p>
+    <p class="my-style">I'm using a user-defined style</p>
+    
+    
     <script src="characters.js"></script>
+    <script src="styles.js"></script>
     <script src="chicken-scratch.js"></script>
     <script>
+      registerStyle('my-style',{color: 'blue', lineWidth: 2});
+      apply();
+      
+      
+      /*
       let canvas = document.getElementById('da-canvas');
+              
       
-      // drawChickenScratchCharacters(canvas, 2);
-      drawAllChickenScratchCharacters(canvas,defaultStyle);
-      
-      
+      drawText(canvas,chickenScratch,'hello world my name is michael it is nice to meet you sort of');
+      */
       /*
       let ctx = canvas.getContext('2d');
       let offset1 = { x: 10, y: 10 };

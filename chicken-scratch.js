@@ -9,36 +9,79 @@ let targetElsTextContent = new Map();
 
 // THIS SHOULD BE PUBLIC
 function registerStyle(name, style) {
-  //
+  // check for valid style name
   if (name == 'chicken-scratch' || name == 'chickenScratch' ) return; // bail if user provides bad name
   
+  // fill out any missing parts of style
   completeStyle(name, style);
   
   // When done, register style
   styleDictionary.set(style.camelName, style);
+  
+  console.log(styleDictionary.get(style.camelName));
+  
+  console.log(styleDictionary.entries());
 }
 
 function completeStyle(name, style) {
   // Get default style
   let defaultStyle = styleDictionary.get('chickenScratch');
 
+  // Go through each key in the default style
+  // and validate it on the test style
   for (let key in defaultStyle) {
-    if (typeof defaultStyle[key] !== 'object') {
-      // If the key is not set
-      if (!style.hasOwnProperty(key)) {
-        style[key] = defaultStyle[key];
-      }
-    } else {
-      for (let subKey in defaultStyle[key]) {
-        if (style[key] == null) {
-          style[key] = defaultStyle[key];
-        }
-      }
+    // debug
+    // console.log('checking ',key);
+
+    // if property is invalid (i.e., not set or
+    // set to an inappropriate value)
+    if (!propertyIsValid(style, key)) {
+      
+      // ...set it to the value of the default style
+      style[key] = defaultStyle[key];
     }
   }
   
   style['name'] = name;
   style['camelName'] = kebabToCamel(name);
+}
+
+function propertyIsValid(style, propName) {
+  if (!style.hasOwnProperty(propName)) return false;
+
+  switch(propName) {
+    case 'lineWidth':
+      if (typeof style[propName] === 'number' && style[propName] >= 2) return true;
+      break;
+    case 'size':
+      if (typeof style[propName] === 'number' && style[propName] >= 1) return true;
+      break;
+    case 'lineHeight':
+    case 'maxRotation':
+    case 'maxTranslation':
+    case 'shadowBlur':
+      if (typeof style[propName] === 'number' && style[propName] >= 0) return true;
+      break;
+    case 'letterSpacing':
+      if (typeof style[propName] === 'number' && style[propName] >= -1) return true;
+      break;
+    case 'lineCap':
+      if (typeof style[propName] === 'string' && style[propName] == 'square' || style[propName] == 'round' || style[propName] == 'butt') return true;
+      break;
+    case 'shadowOffsetX':
+    case 'shadowOffsetY':
+      if (typeof style[propName] === 'number') return true;
+      break;
+    case 'shadowDraw':
+      if (typeof style[propName] === 'boolean') return true;
+      break;
+    case 'color':
+    case 'shadowColor':
+      if (colorIsValid(style[propName])) return true;
+      break;
+  }
+
+  return false;
 }
 
 // I'm sure there's a better way to implement
@@ -55,8 +98,6 @@ function kebabToCamel(kebab) {
     index = hyphenLocations[hyphenLocations.length - 1] + 1;
   }
   
-  console.log('hyphenLocations =',hyphenLocations);
-  
   if (hyphenLocations.length == 0) return kebab; // bail if there are no hyphens
   
   // capitalize letters following hyphens
@@ -71,6 +112,8 @@ function kebabToCamel(kebab) {
 
   return kebab;
 }
+
+
 // ALL OF THESE FUNCTIONS SHOULD BE PRIVATE AND APPLY SHOULD BE CALLED AUTOMATICALLY ON PAGE LOAD
 // This function replaces the innerHTML of every .chicken-scratch
 // element with a canvas element holding the original textContent of the element
@@ -138,11 +181,11 @@ function applyStyleToContext(style, ctx) {
   ctx.lineWidth = style.lineWidth;
   ctx.lineCap = style.lineCap;
   
-  if (style.shadow.draw) {
-    ctx.shadowColor = style.shadow.color;
-    ctx.shadowOffsetX = style.shadow.offsetX;
-    ctx.shadowOffsetY = style.shadow.offsetY;
-    ctx.shadowBlur = style.shadow.blur;
+  if (style.shadowVisibility) {
+    ctx.shadowColor = style.shadowColor;
+    ctx.shadowOffsetX = style.shadowOffsetX;
+    ctx.shadowOffsetY = style.shadowOffsetY;
+    ctx.shadowBlur = style.shadowBlur;
   }
 }
 
@@ -539,6 +582,30 @@ function calculateTextHeight(canvas, style, text) {
   return totalHeight;
 }
 
+
+function colorIsValid(testColor) {
+  // Create an element and append it to body
+  let colorChecker = document.createElement('div');
+  colorChecker.style.position = 'absolute';
+  colorChecker.style.opacity = 0;
+  document.getElementsByTagName('body')[0].appendChild(colorChecker);
+  
+  // Set original color and test updated color
+  colorChecker.style.color = 'rgb(255,255,255)';
+  let originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+  colorChecker.style.color = testColor;
+  let updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+  if (updatedColor != originalColor) return true;
+  
+  // if necessary, test again with a different original color
+  colorChecker.style.color = 'rgb(0,0,0)';
+  originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+  colorChecker.style.color = testColor;
+  updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+  if (updatedColor != originalColor) return true;
+  
+  return false;
+}
 
 // OLD AND POSSIBLY INTERESTING BUT CURRENTLY UNNECESSARY CODE
 /* 

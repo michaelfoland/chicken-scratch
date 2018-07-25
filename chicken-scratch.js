@@ -179,7 +179,7 @@ function apply() {
 function applyStyleToContext(style, ctx) {
   ctx.strokeStyle = style.color;
   ctx.lineWidth = style.lineWidth;
-  ctx.lineCap = style.lineCap;
+  // ctx.lineCap = style.lineCap; // removing this; linecaps will be added at beginning and end of strokes if necessary
   
   if (style.shadowVisibility) {
     ctx.shadowColor = style.shadowColor;
@@ -294,23 +294,259 @@ function getBaseOffset(style) {
 
 function drawChickenScratchCharacter(context, character, offset, style) {
   character.forEach(stroke => {
-    drawChickenScratchStroke(context, stroke, offset, style)   
+    drawChickenScratchStroke(context, stroke, offset, style) 
   });  
 }
 
-function drawStroke(context, stroke, offset) {
+function drawStroke(context, style, stroke, offset) {
+  // 1 Draw main stroke
   context.beginPath();
-  
+    
   if (Array.isArray(stroke)) {
     stroke.forEach(subStroke => {
       draw(context, subStroke, offset);
-    })
+    });
   } else {
     draw(context, stroke, offset);
   }
-    
+  
   context.stroke();
+  context.closePath();
+  
+  // 2 Add linecaps if necessary
+  // CHANGING COLOR JUST TO CHECK DIRECTION
+  // REMOVE LATER
+  //context.strokeStyle = 'black';
+  
+  if (style.lineCap != 'butt' && !stroke.noLineCaps) {
+    if (!Array.isArray(stroke)) {
+      drawStartingLinecap(context, style, stroke, offset);  
+      drawEndingLinecap(context, style, stroke, offset);  
+    } else {
+      drawStartingLinecap(context, style, stroke[0], offset);
+      drawEndingLinecap(context, style, stroke[stroke.length - 1], offset);
+    }
+  }
+  
+  // JUST TO CHECK LINE CAP POSITION
+  // REMOVE LATER
+  //context.strokeStyle = style.color;
+
+  // 3 Redraw main stroke if necessary
+  if (style.lineCap != 'butt' && style.shadowVisibility) {
+    // hide shadow
+    context.shadowBlur = 0;
+    context.shadowColor = '';
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+
+    // draw main stroke
+    context.beginPath();
+    if (Array.isArray(stroke)) {
+      stroke.forEach(subStroke => {
+        draw(context, subStroke, offset);
+      });
+    } else {
+      draw(context, stroke, offset);
+    }
+    context.stroke();
+    context.closePath();
+    
+    // reset shadow
+    context.shadowBlur = style.shadowBlur;
+    context.shadowColor = style.shadowColor;
+    context.shadowOffsetX = style.shadowOffsetX;
+    context.shadowOffsetY = style.shadowOffsetY;
+  }
 }
+
+function drawStartingLinecap(context, style, stroke, offset) {
+  context.lineCap = style.lineCap;
+  context.beginPath();
+  let lineCapAnchors = getLineCapAnchors('start', stroke, offset);
+  context.moveTo(lineCapAnchors.x1, lineCapAnchors.y1);
+  context.lineTo(lineCapAnchors.x2, lineCapAnchors.y2);
+  context.stroke();
+  context.closePath();
+  context.lineCap = 'butt';
+}
+
+function drawEndingLinecap(context,style,stroke,offset) {
+  context.lineCap = style.lineCap;
+  context.beginPath();
+  let lineCapAnchors = getLineCapAnchors('end',stroke, offset);
+  context.moveTo(lineCapAnchors.x1, lineCapAnchors.y1);
+  context.lineTo(lineCapAnchors.x2, lineCapAnchors.y2);
+  context.stroke();
+  context.closePath();
+  context.lineCap = 'butt';
+}
+
+
+function getLineCapAnchors(startOrEnd, stroke, offset) {
+  if (stroke.type == 'ellipse') {
+    
+    return getEllipseLineCapAnchors(startOrEnd, stroke, offset);
+    
+  } else if (stroke.type == 'line') {
+      let xChange;
+      let yChange;
+      let slope;
+
+    if (startOrEnd == 'start') {
+      if (stroke.start.x < stroke.end.x) {
+        xChange = 0.1;
+      } else if (stroke.start.x > stroke.end.x) {
+        xChange = -0.1;
+      } else {
+        xChange = 0;
+      }
+
+      if (xChange === 0) {
+        if (stroke.start.y < stroke.end.y) {
+          yChange = 0.1;
+        } else {
+          yChange = -0.1;
+        }
+      } else {
+        // find slope
+        slope = (stroke.start.y - stroke.end.y) / (stroke.start.x - stroke.end.x);
+
+        yChange = xChange * slope;
+      }
+
+      return {
+        x1: offset.x + stroke.start.x,
+        y1: offset.y + stroke.start.y,
+        x2: offset.x + stroke.start.x + xChange,
+        y2: offset.y + stroke.start.y + yChange
+      };
+    } else if (startOrEnd == 'end') {
+      if (stroke.start.x < stroke.end.x) {
+        xChange = -0.1;
+      } else if (stroke.start.x > stroke.end.x) {
+        xChange = 0.1;
+      } else {
+        xChange = 0;
+      }
+      
+      if (xChange === 0) {
+        if (stroke.start.y < stroke.end.y) {
+          yChange = -0.1;
+        } else {
+          yChange = 0.1;
+        }
+      } else {
+        // find slope
+        slope = (stroke.start.y - stroke.end.y) / (stroke.start.x - stroke.end.x);
+        
+        yChange = xChange * slope;
+      }
+    
+      return {
+        x1: offset.x + stroke.end.x,
+        y1: offset.y + stroke.end.y,
+        x2: offset.x + stroke.end.x + xChange,
+        y2: offset.y + stroke.end.y + yChange
+      };
+    }
+  }
+}
+
+function getEllipseLineCapAnchors(startOrEnd, stroke, offset) {
+  if (startOrEnd == 'start') {
+    return getEllipseStartingAnchor(stroke, offset);   
+  } else if (startOrEnd == 'end') {
+    return getEllipseEndingAnchor(stroke, offset);
+  }
+}
+
+function getEllipseStartingAnchor(stroke,offset) {
+  var radiusX = (stroke.bounds.x2 - stroke.bounds.x1) * 0.5,
+      radiusY = (stroke.bounds.y2 - stroke.bounds.y1) * 0.5,
+      centerX = stroke.bounds.x1 + radiusX,
+      centerY = stroke.bounds.y1 + radiusY;
+
+  let step = .01; // test this
+  let newAngle;
+  if (stroke.direction == 'clockwise') {
+    newAngle = stroke.start + step;
+  } else if (stroke.direction == 'counter-clockwise') {
+    newAngle = stroke.start - step;
+  }
+  
+  return {
+    x1: centerX + radiusX * Math.cos(stroke.start) + offset.x,
+    y1: centerY + radiusY * Math.sin(stroke.start) + offset.y,
+    x2: centerX + radiusX * Math.cos(newAngle) + offset.x,
+    y2: centerY + radiusY * Math.sin(newAngle) + offset.y
+  };
+}
+
+function getEllipseEndingAnchor(stroke,offset) {
+  var radiusX = (stroke.bounds.x2 - stroke.bounds.x1) * 0.5,
+      radiusY = (stroke.bounds.y2 - stroke.bounds.y1) * 0.5,
+      centerX = stroke.bounds.x1 + radiusX,
+      centerY = stroke.bounds.y1 + radiusY;
+
+  let step = .01;
+  let newAngle;
+  
+  if (stroke.direction == 'clockwise') {
+    newAngle = stroke.end - step;
+  } else if (stroke.direction == 'counter-clockwise') {
+    newAngle = stroke.end + step;
+  }
+    
+  return {
+    x1: centerX + radiusX * Math.cos(stroke.end) + offset.x,
+    y1: centerY + radiusY * Math.sin(stroke.end) + offset.y,
+    x2: centerX + radiusX * Math.cos(newAngle) + offset.x,
+    y2: centerY + radiusY * Math.sin(newAngle) + offset.y
+  };
+}
+
+
+/*
+
+function getStrokeStartingPoint(stroke, offset) {
+  if (stroke.type === 'line') {
+    return {
+      x: offset.x + stroke.start.x,
+      y: offset.y + stroke.start.y
+    };
+  } else if (stroke.type === 'ellipse') {
+    return getEllipseStartingPoint(stroke, offset);
+  }
+}
+
+
+function getStrokeEndingPoint(stroke, offset) {
+  if (stroke.type === 'line') {
+    return {
+      x: offset.x + stroke.end.x,
+      y: offset.y + stroke.end.y
+    };
+  } else if (stroke.type === 'ellipse') {
+    return getEllipseEndingPoint(stroke, offset);
+  }
+}
+
+
+
+function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
+  var radiusX = (x2 - x1) * 0.5,
+      radiusY = (y2 - y1) * 0.5,
+      centerX = x1 + radiusX,
+      centerY = y1 + radiusY,
+      step = 0.1,
+      a = start,
+      pi2 = Math.PI * 2 - step;
+
+  ctx.lineWidth -= 1; // maybe update this in the future
+
+  ctx.moveTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
+*/
 
 function applySizeRatio(value, ratio) {
   return ((value - 1) * ratio) + 1;
@@ -386,7 +622,7 @@ function drawChickenScratchStroke(context, stroke, offset, style) {
   context.translate(randomXTrans, randomYTrans);
   
   // draw stroke
-  drawStroke(context, resizedStroke, newOffset);
+  drawStroke(context, style, resizedStroke, newOffset);
   
   // restore context object
   context.restore();

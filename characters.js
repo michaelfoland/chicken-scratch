@@ -283,6 +283,7 @@ const characters = {
     ],
   O: [
       {
+        noLineCaps: true,
         type: 'ellipse',
         bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
         start: Math.PI * 3.62,
@@ -318,6 +319,7 @@ const characters = {
     ],
   Q: [
       {
+        noLineCaps: true,
         type: 'ellipse',
         bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
         start: Math.PI * 3.62,

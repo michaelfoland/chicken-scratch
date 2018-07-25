@@ -36,7 +36,7 @@ const constructionPaper = {
   name: 'construction-paper',
   camelName: 'constructionPaper',
   maxRotation: 10,
-  maxTranslation: .1,
+  maxTranslation: .10,
   size: 72, 
   color: '#58b',
   lineWidth: 12,

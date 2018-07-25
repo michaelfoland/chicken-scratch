@@ -119,12 +119,10 @@ function kebabToCamel(kebab) {
 // element with a canvas element holding the original textContent of the element
 function apply() {
   // 1 FETCH ALL ELEMENTS TO TARGET
-  // Fetch all els with .chicken-scratch OR a user custom class
   styleDictionary.forEach(style => {
     targetEls[style.camelName] = Array.from(document.getElementsByClassName(style.name));
   });
   
-  console.log('after fetching style, targetEls =',targetEls);
   // 2 PROCESS EACH ELEMENT
   let index;
   
@@ -132,15 +130,11 @@ function apply() {
   for (let group in targetEls) {
     index = 0;
     
-    console.log('currently processing elements with style:',group);
-    
     // Get style corresponding to this group
     let style = styleDictionary.get(group);
     
     // go through each element bearing that style
     targetEls[group].forEach(element => {
-      
-      console.log('\tcurrently processing',element);
       
       // Give element ID if necessary
       if (!element.id) {
@@ -149,6 +143,7 @@ function apply() {
       }
       
       // Store element in map (for future retrieval, if necessary)
+      // Maybe change this to storing outerHTML?
       targetElsHTML.set(element.id,element);
       
       // Store element's textContent in map
@@ -157,23 +152,76 @@ function apply() {
       // Replace element with a canvas container 
       let canvasContainer = document.createElement('div');
       canvasContainer.style.width = '100%';
-      canvasContainer.style.height = '100%';
-
+      canvasContainer.dataset.csText = element.textContent; // save element's text content as data attr of container
+      canvasContainer.dataset.csStyle = style.camelName; // save cs style as data attr of container
+      
       let parent = element.parentElement;
       parent.insertBefore(canvasContainer,element);
       parent.removeChild(element);
       
       // Create new canvas element
-      let newCanvas = document.createElement('canvas');
-      newCanvas.width = canvasContainer.clientWidth;
-      newCanvas.height = Math.ceil(calculateTextHeight(newCanvas,style,targetElsTextContent.get(element.id)));
-      
-      drawText(newCanvas, style, targetElsTextContent.get(element.id)) + 'px';
-      
-      // Replace that with canvas
-      canvasContainer.append(newCanvas);
+      createAndAppendCanvas(canvasContainer, style, targetElsTextContent.get(element.id));
     });
   }
+}
+
+function createAndAppendCanvas(canvasContainer, style, text) {
+  // Empty canvas container
+  // canvasContainer.innerHTML = '';
+  
+  // Create new canvas element
+  let newCanvas = document.createElement('canvas');
+  newCanvas.width = canvasContainer.clientWidth;
+  newCanvas.height = Math.ceil(calculateTextHeight(newCanvas,style,text));
+  canvasContainer.style.height = newCanvas.height + 'px';
+  
+  drawText(newCanvas, style, text);
+
+  // Append new canvas to container
+  canvasContainer.appendChild(newCanvas);
+
+  canvasContainer.dataset.resizeHandlerAppended = Date.now();
+  addResizeListener(canvasContainer, redrawCanvas);    
+}
+
+function resizeLogger() {
+  console.log('resize occurred at', Date.now() % 10000);
+}
+
+function redrawCanvas(e) {
+  console.log('in redrawCanvas @',Date.now() % 10000);
+  
+  let container = e.target.parentElement.parentElement;
+  
+  // this line is necessary b/c resize handler is firing once as soon as it is attached,
+  // for no very clear reason
+  if (Date.now() - Number(container.dataset.resizeHandlerAppended) < 50) return; 
+  
+  // let canvas = container.querySelector('canvas');
+  
+  let style = styleDictionary.get(container.dataset.csStyle);
+  let text = container.dataset.csText;
+  let newCanvas = document.createElement('canvas');
+
+  newCanvas.width = container.clientWidth;
+  newCanvas.height = Math.ceil(calculateTextHeight(newCanvas, style, text));
+
+  // console.log('canvas =',canvas);
+  // console.log('newCanvas =',newCanvas);
+  
+  drawText(newCanvas, style, text);
+
+  console.log('prior to any changes container.children =',container.children);
+  
+  container.removeChild(container.firstElementChild);
+    
+  console.log('after removing canvas, container.children =',container.children);
+  // container.removeChild(container.lastElementChild);
+  container.insertBefore(newCanvas,container.firstElementChild);
+  
+  console.log('after inserting new canvas, container.children =',container.children);
+  // container.appendChild(newCanvas);
+  
 }
 
 function applyStyleToContext(style, ctx) {

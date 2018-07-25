@@ -667,8 +667,8 @@ const characters = {
           },
           {
             type: 'line',
-            start: { x: 35, y: 17 },
-            end: { x: 19, y: 49 }
+            start: { x: 36, y: 18 },
+            end: { x: 36, y: 49 }
           }
     ]
   

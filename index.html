@@ -4,26 +4,24 @@
     <meta charset="utf-8">
     <title>Chicken Scratch Test Page</title>
     <style> 
-      div {
-        display: flex;
-        justify-content: center;
-      }
-      canvas {
-        /* border: solid 1px black; */
-      }
-      
-      #the-div {
-        max-width: 800px;
+      #outer-div {
+        width: 50%;
+        border: solid 1px blue;
       }
     </style>
   </head>
   <body>
-    <p class="chicken-scratch">123456789</p>
+    <div id="outer-div">
+      <div class="chicken-scratch">123456789ABCDEFGHIJ</div>
+    </div>
+    
+    <!-- 
     <p style="font-size: 8px; font-family: monospace;">I AM JUST NORMAL TEXT 28PX</p>
-    <p class="construction-paper">I am construction paper seventy two pt</p>
+    <p class="construction-paper">I am construction paper 72 pt</p>
     <p class="bad-style">I'm a poorly defined custom style that falls back to the default style</p>
+    -->
     
-    
+    <script src="javascript-detect-element-resize-master/detect-element-resize.js"></script>
     <script src="characters.js"></script>
     <script src="styles.js"></script>
     <script src="chicken-scratch.js"></script>

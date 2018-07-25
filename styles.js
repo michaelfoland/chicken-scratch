@@ -17,8 +17,8 @@ const badStyle = {
 const chickenScratch = {
   name: 'chicken-scratch',
   camelName: 'chickenScratch',
-  maxRotation: 0,
-  maxTranslation: .0,
+  maxRotation: 10,
+  maxTranslation: .10,
   size: 48, // not sure what value to use here; this is character height in px
   color: 'black',
   lineWidth: 8,

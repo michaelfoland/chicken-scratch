@@ -139,16 +139,16 @@ const characters = {
       [
         {
           type: 'ellipse',
-          bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
-          start: Math.PI * 1.88,
-          end: Math.PI - .05,
+          bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
+          start: Math.PI * 1.85,
+          end: Math.PI - 0.05,
           direction: 'counter-clockwise'
         },
         {
           type: 'ellipse',
-          bounds: { x1: 1, y1: 1, x2: 38, y2: 49 },
-          start: Math.PI + .05,
-          end: Math.PI * 0.05,
+          bounds: { x1: 1, y1: 1, x2: 37, y2: 49 },
+          start: Math.PI + 0.05,
+          end: Math.PI * 0.08,
           direction: 'counter-clockwise'
         }
       ],
@@ -497,5 +497,179 @@ const characters = {
         start: { x: 1, y: 49 },
         end: { x: 37, y: 49 }
       }
+    ],
+  _1: [
+        {
+          type: 'line',
+          start: { x: 19, y: 1 },
+          end: { x: 1, y: 19 }
+        },
+        { 
+          type: 'line',
+          start: { x: 19, y: 1 },
+          end: { x: 19, y: 49 }
+        },
+        {
+          type: 'line',
+          start: { x: 1, y: 49 },
+          end: { x: 37, y: 49 }
+        }
+    ],
+  _2: [
+        [
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 1, x2: 37, y2: 23 },
+            start: Math.PI,
+            end: Math.PI * .25,
+            direction: 'clockwise'
+          },
+          {
+            type: 'line',
+            start: { x: 33, y: 19 },
+            end: { x: 1, y: 49 }
+          }
+        ],
+        { 
+          type: 'line',
+          start: { x: 1, y: 49 },
+          end: { x: 37, y: 49 }
+        }
+    ],
+  _3: [
+        [
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 1, x2: 37, y2: 25 },
+            start: Math.PI * 1.15,
+            end: Math.PI / 2,
+            direction: 'clockwise'
+          },
+          {
+            type: 'line',
+            start: { x: 20, y: 25 },
+            end: { x: 13, y: 25 }
+          }
+        ],
+        [ 
+          {
+            type: 'line',
+            start: { x: 13, y: 25 },
+            end: { x: 20, y: 25 }
+          },
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 25, x2: 37, y2: 49 },
+            start: Math.PI * 1.5,
+            end: Math.PI * .85,
+            direction: 'clockwise'
+          }
+        ]
+    ],
+  _4: [
+        {
+          type: 'line',
+          start: { x: 7, y: 1 },
+          end: { x: 1, y: 25 }
+        },
+        {
+          type: 'line',
+          start: { x: 1, y: 25 },
+          end: { x: 37, y: 25 }
+        },
+        {
+          type: 'line',
+          start: { x: 28, y: 1 },
+          end: { x: 28, y: 49 }
+        }
+    ],
+  _5: [
+        {
+          type: 'line',
+          start: { x: 7, y: 1 },
+          end: { x: 1, y: 23 }
+        },
+        {
+          type: 'ellipse',
+          bounds: { x1: -9, y1: 19, x2: 37, y2: 49 },
+          start: Math.PI * 1.3,
+          end: Math.PI * 0.7,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 7, y: 1},
+          end: { x: 37, y: 1}
+        }
+    ],
+  _6: [
+        [
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 1, x2: 39, y2: 65 },
+            start: Math.PI * 1.725,
+            end: Math.PI * .95,
+            direction: 'counter-clockwise'
+          },
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 19, x2: 37, y2: 49 },
+            start: Math.PI * .95,
+            end: Math.PI * .96,
+            direction: 'counter-clockwise'
+          }
+        ]
+      ],
+    _7: [
+          {
+            type: 'line',
+            start: { x: 1, y: 1},
+            end: { x: 37, y: 1 }
+          },
+          {
+            type: 'line',
+            start: { x: 37, y: 1},
+            end: { x: 10, y: 49 }
+          }
+    ],
+  _8: [
+        [
+          {
+            type: 'ellipse',
+            bounds: { x1: 3, y1: 1, x2: 35, y2: 23 },
+            start: Math.PI * 1.6,
+            end: Math.PI * 0.48,
+            direction: 'counter-clockwise'
+          },
+          {
+            type: 'ellipse',
+            bounds: { x1: 1, y1: 23, x2: 37, y2: 49 },
+            start: Math.PI * 1.49,
+            end: Math.PI * 1.48,
+            direction: 'clockwise'
+          },
+          { 
+            type: 'ellipse',
+            bounds: { x1: 3, y1: 1, x2: 35, y2: 23 },
+            start: Math.PI * 0.48,
+            end: Math.PI * 1.59,
+            direction: 'counter-clockwise'
+          }
+        ]
+      ],
+    _9: [
+          {
+            type: 'ellipse',
+            bounds: { x1: 2, y1: 1, x2: 36, y2: 27 },
+            start: Math.PI * 3.8,
+            end: Math.PI * 1.75,
+            direction: 'counter-clockwise'
+          },
+          {
+            type: 'line',
+            start: { x: 35, y: 17 },
+            end: { x: 19, y: 49 }
+          }
     ]
+  
 };

@@ -246,7 +246,10 @@ function drawText(canvasEl, style, text) {
       if (characters[char]) {
         drawChickenScratchCharacter(ctx,characters[char],charOffset,style);
         currentChar++;        
-      } 
+      } else if (characters['_' + char]) {
+        drawChickenScratchCharacter(ctx,characters['_' + char],charOffset,style);
+        currentChar++;        
+      }
     }
     
     // Add space after word (unless it's the last word)
@@ -467,7 +470,7 @@ function getEllipseStartingAnchor(stroke,offset) {
       centerX = stroke.bounds.x1 + radiusX,
       centerY = stroke.bounds.y1 + radiusY;
 
-  let step = .01; // test this
+  let step = .05; // test this
   let newAngle;
   if (stroke.direction == 'clockwise') {
     newAngle = stroke.start + step;
@@ -489,7 +492,7 @@ function getEllipseEndingAnchor(stroke,offset) {
       centerX = stroke.bounds.x1 + radiusX,
       centerY = stroke.bounds.y1 + radiusY;
 
-  let step = .01;
+  let step = .05;
   let newAngle;
   
   if (stroke.direction == 'clockwise') {

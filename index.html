@@ -4,47 +4,43 @@
     <meta charset="utf-8">
     <title>Chicken Scratch Test Page</title>
     <style> 
-      #outer-div {
-        width: 100%;
-        border: solid 1px blue;
+      .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
       }
+      .flex-container > span {
+        display: inline;
+      }
+
     </style>
   </head>
   <body>
-    <div id="outer-div">
-      <div class="chicken-scratch">I'm adding a whole bunch of text to see if this gets laggy at all at all at all! Antidisestablishmentarianism</div>
+    <div class="flex-container">
+      <span class="chicken-scratch">this is the default chicken scratch style</span>
+      <span class="chicken-scratch-small">but you can change size</span>
+      <span class="chicken-scratch-green">And you can change color</span>
+      <span class="chicken-scratch-fat">And font weight</span>
+      <span class="chicken-scratch-thin">aka line width</span>
+      <span class="chicken-scratch-shadow">You can add shadows</span>
+      <span class="chicken-scratch-high-translation">Increase translation</span>
+      <span class="chicken-scratch-low-translation">or decrease it</span>
+      <span class="chicken-scratch-high-rotation">Same goes</span>
+      <span class="chicken-scratch-low-rotation">for rotation</span>
+      <span class="chicken-scratch-expanded">You can expand text</span>
+      <span class="chicken-scratch-condensed">Or condense it</span>
+      <span class="chicken-scratch-straight">Or just keep it straight and boring</span>
     </div>
-    <div id="div-2">
-    <div class="construction-paper">I DID IT</div>
-    </div>
-
-    <script src="javascript-detect-element-resize-master/detect-element-resize.js"></script>
+    
+    <div class="construction-paper">GO MESS AROUND</div>
+    
     <script src="characters.js"></script>
     <script src="styles.js"></script>
+    <script src="styleDictionary.js"></script>
     <script src="chicken-scratch.js"></script>
     <script>
     //  registerStyle('bad-style',badStyle);
-      apply2();
-      
-      
-      /*
-      let canvas = document.getElementById('da-canvas');
-              
-      
-      drawText(canvas,chickenScratch,'hello world my name is michael it is nice to meet you sort of');
-      */
-      /*
-      let ctx = canvas.getContext('2d');
-      let offset1 = { x: 10, y: 10 };
-      
-      let offset2 = { x: 10, y: 60 };
-      
-      let offset3 = { x: 10, y: 160 };
-      
-      drawChickenScratchCharacter(ctx, characters.B, offset1, 1);
-      drawChickenScratchCharacter(ctx, characters.B, offset2, 2);
-      drawChickenScratchCharacter(ctx, characters.B, offset3, .5);
-      */
+      apply();
     </script>
   </body>
 </html>

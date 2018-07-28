@@ -19,9 +19,9 @@ const chickenScratch = {
   camelName: 'chickenScratch',
   maxRotation: 10,
   maxTranslation: .10,
-  size: 16, // not sure what value to use here; this is character height in px
+  size: 32, // not sure what value to use here; this is character height in px
   color: 'black',
-  lineWidth: 2,
+  lineWidth: 5,
   lineHeight: 1.4,
   letterSpacing: .2, // i.e, the space btw chars should be 20% (.20) of char width 
   lineCap: 'square',
@@ -30,6 +30,71 @@ const chickenScratch = {
   shadowOffsetX: 4,
   shadowOffsetY: 2,
   shadowColor: '#555'
+};
+
+const chickenScratchGreen = {
+  color: '#396'
+}
+
+const chickenScratchSmall = {
+  size: 16 // not sure what value to use here; this is character height in px
+}
+
+const chickenScratchFat = {
+  lineWidth: 12
+}
+
+const chickenScratchThin = {
+  lineWidth: 2
+}
+
+const chickenScratchShadow = {
+  shadowVisibility: true
+}
+
+const chickenScratchHighTranslation = {
+  maxTranslation: .20,
+  maxRotation: 0,
+  color: 'red'
+}
+
+const chickenScratchLowTranslation = {
+  maxTranslation: .05,
+  maxRotation: 0,
+  color: 'orange'
+}
+
+const chickenScratchHighRotation = {
+  maxTranslation: .0,
+  maxRotation: 20,
+  color: 'yellow'
+}
+
+const chickenScratchLowRotation = {
+  maxTranslation: .0,
+  maxRotation: 5,
+  color: 'green'
+}
+
+const  chickenScratchExpanded = {
+  letterSpacing: .6,
+  color: 'blue'
+}
+
+const chickenScratchCondensed = {
+  letterSpacing: .0,
+  color: 'purple'
+}
+
+const chickenScratchRound = {
+  lineCap: 'round'
+};
+
+const chickenScratchStraight = {
+  maxRotation: 0,
+  maxTranslation: 0,
+  lineWidth: 2,
+  lineCap: 'butt'
 };
 
 const constructionPaper = {
@@ -49,6 +114,7 @@ const constructionPaper = {
   shadowOffsetY: 3,
   shadowColor: '#864'
 };
+
 
 // OLD SHADOW FORMAT
 /*

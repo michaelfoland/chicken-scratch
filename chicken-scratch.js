@@ -35,17 +35,26 @@ function addCanvasesAndDraw(originalElement, managedElement) {
   // Clean out original element and give it a csId
   originalElement.innerHTML = '';
   originalElement.dataset.csId = csId;
-    
-  let wordHeight = calculateWordHeight(style);
-  let baseOffset = calculateBaseOffset(style);
+  
   let charWidth = calculateCharWidth(style);
   
   words.forEach((word, index) => {
+    let wordSize = calculateWordSize(word, style); // not sure I need this here?  maybe for setting margins?
+    let canvasSize = calculateCanvasSize(word, style);
+
+    console.log('wordSize =',wordSize);
+    console.log('canvasSize =',canvasSize);
+    
     // create new canvas
     let newCanvas = document.createElement('canvas');
     newCanvas.dataset.csId = managedElement.csId + '-canvas-' + index;
-    newCanvas.width = calculateWordWidth(word, style);
-    newCanvas.height = wordHeight;
+    newCanvas.width = canvasSize.x;
+    newCanvas.height = canvasSize.y;
+    
+    xMargin = ((charWidth / 2) - ((canvasSize.x - wordSize.x) / 2)) + 'px';
+    yMargin = (0 - ((canvasSize.y - wordSize.y) / 2)) + 'px';
+
+    newCanvas.style.margin = yMargin + ' ' + xMargin;
     
     drawWord(newCanvas, style, word, transforms[index])
     
@@ -79,7 +88,7 @@ function drawWord(canvas, style, word, transforms) {
 
       // calculate translation offset
       let contextTranslationOffset = {
-        x: baseOffset.x + charOffset.x + strokeOffset.x + randomOffset.x,
+        x: baseOffset.x + charOffset.x + strokeOffset.x + randomOffset.x + (style.lineWidth / 2),
         y: baseOffset.y + charOffset.y + strokeOffset.y + randomOffset.y + (style.lineWidth / 2)
       };
       
@@ -329,11 +338,32 @@ function calculateStrokeOffset(style, stroke) {
   }
 }
 
-function calculateWordWidth(word, style) {
+function calculateWordSize(word, style) {
+  let charWidth = calculateCharWidth(style);
+  
+  return {
+    x: (word.length * charWidth)  - (charWidth * style.letterSpacing),
+    y: calculateCharHeight(style)
+  };
+}
+
+function calculateCanvasSize(word, style) {
   let baseOffset = calculateBaseOffset(style);
   let charWidth = calculateCharWidth(style);
   
-  return word.length * charWidth + (baseOffset.x * 2) - (charWidth * style.letterSpacing);
+  let shadow = {x: 0, y: 0};
+  
+  if (style.shadowVisibility) {
+    shadow = {
+      x: style.shadowOffsetX + style.shadowBlur,
+      y: style.shadowOffsetY + style.shadowBlur
+    }
+  }
+  
+  return {
+    x: (word.length * charWidth) + (baseOffset.x * 2) - calculateLetterSpacing(style) + shadow.x + 1,
+    y: (baseOffset.y * 2) + calculateCharHeight(style) + shadow.y + 1
+  };
 }
 
 function calculateWordHeight(style) {
@@ -347,9 +377,13 @@ function calculateWordHeight(style) {
 function calculateCharWidth(style) {
   return ((style.size * .75) + style.lineWidth) * (1 + style.letterSpacing);
 }
+
+function calculateLetterSpacing(style) {
+  return ((style.size * .75) + style.lineWidth) * style.letterSpacing;
+}
     
 function calculateCharHeight(style) {
-  return (style.size * style.lineHeight) + style.lineWidth;
+  return (style.size + style.lineWidth) * style.lineHeight;
 }
 
 function calculateBaseOffset(style) {

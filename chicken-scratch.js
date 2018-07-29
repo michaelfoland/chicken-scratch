@@ -44,7 +44,7 @@ function addCanvasesAndDraw(originalElement, managedElement) {
     // create new canvas
     let newCanvas = document.createElement('canvas');
     newCanvas.dataset.csId = managedElement.csId + '-canvas-' + index;
-    newCanvas.width = word.length * charWidth + (baseOffset.x * 2);
+    newCanvas.width = calculateWordWidth(word, style);
     newCanvas.height = wordHeight;
     
     drawWord(newCanvas, style, word, transforms[index])
@@ -74,13 +74,13 @@ function drawWord(canvas, style, word, transforms) {
       resizeStroke(resizedStroke,style.size / 48);
 
       // get char and stroke offsets
-      let strokeOffset = calculateStrokeOffset(resizedStroke);
+      let strokeOffset = calculateStrokeOffset(style, resizedStroke);
       let randomOffset = transforms[charIndex][strokeIndex].translation;
 
       // calculate translation offset
       let contextTranslationOffset = {
         x: baseOffset.x + charOffset.x + strokeOffset.x + randomOffset.x,
-        y: baseOffset.y + charOffset.y + strokeOffset.y + randomOffset.y
+        y: baseOffset.y + charOffset.y + strokeOffset.y + randomOffset.y + (style.lineWidth / 2)
       };
       
       // apply transforms to context
@@ -99,51 +99,6 @@ function drawWord(canvas, style, word, transforms) {
       ctx.restore();
     });
   }
-}
-
-function replaceElementAndDraw(originalElement, managedElement) {
-  
-  // Replace original element with canvas container
-  let canvasContainer = document.createElement('div');
-  canvasContainer.dataset.csId = managedElement.csId;
-  canvasContainer.style.width = '100%';
-  let parent = originalElement.parentElement;
-  parent.insertBefore(canvasContainer,originalElement);
-  parent.removeChild(originalElement);
-  
-  // Create new canvas element, draw text on it, and append to container
-  let newCanvas = document.createElement('canvas');
-  newCanvas.width = canvasContainer.clientWidth;
-  newCanvas.height = Math.ceil(calculateTextHeight(newCanvas,managedElement));
-  canvasContainer.style.height = newCanvas.height + 'px';
-  drawText(newCanvas, managedElement);
-  canvasContainer.appendChild(newCanvas);
-  
-  // Add resize listener
-  canvasContainer.dataset.resizeHandlerAppended = Date.now();
-  addResizeListener(canvasContainer, redrawCanvas);    
-}
-
-function redrawCanvas(e) {
-  
-  let container = e.target.parentElement.parentElement;
-  console.log('in redraw canvas for',container.dataset.csId);
-  
-  // This line is necessary b/c resize handler is firing once 
-  // as soon as it is attached. I don't know why
-  if (Date.now() - Number(container.dataset.resizeHandlerAppended) < 50) return; 
-  
-  // based on container's data-cs-id, get managedElement from map
-  let managedElement = managedElements.get(container.dataset.csId);
-  
-  // resize canvas based on new width
-  let canvas = container.querySelector('canvas');
-  canvas.width = container.clientWidth;
-  canvas.height = Math.ceil(calculateTextHeight(canvas,managedElement));
-  container.style.height = canvas.height + 'px';
-
-  // Draw text on the canvas
-  drawText(canvas, managedElement);
 }
 
 function generateDrawingSpecs(style, text) {
@@ -203,70 +158,6 @@ function cleanText(text) {
     return text;
 }
 
-function drawText(canvas, managedElement) {
-  // Get context and set its style
-  let ctx = canvas.getContext('2d');
-  let style = styleDictionary.get(managedElement.styleName);
-  applyStyleToContext(style, ctx);
-
-  // Get word widths
-  let wordOffsets = calculateWordOffsets(canvas, managedElement);
-  
-  let words = managedElement.cleanedTextArray;
-  
-  // go through each word
-  words.forEach((word, wordIndex) => {
-        
-    // go through each char
-    for (let charIndex = 0; charIndex < word.length; charIndex++) {
-        
-      // get char and its strokes
-      let char = word.charAt(charIndex);
-      let strokes = getStrokes(char);
-      
-      // go through each stroke 
-      strokes.forEach((stroke, strokeIndex) => {
-        
-        // resize stroke based on style size
-        let resizedStroke = JSON.parse(JSON.stringify(stroke));
-        resizeStroke(resizedStroke,style.size / 48);
-
-        // get char and stroke offsets
-        let wordOffset = wordOffsets[wordIndex];
-        let charOffset = calculateCharOffsetInWord(style, charIndex);
-        let strokeOffset = calculateStrokeOffset(resizedStroke);
-        let randomOffset = managedElement.wobble[wordIndex][charIndex][strokeIndex];
-        
-        let contextTranslationOffset = {
-          x: wordOffset.x + charOffset.x + strokeOffset.x + randomOffset.translation.x,
-          y: wordOffset.y + charOffset.y + strokeOffset.y + randomOffset.translation.y
-        };
-
-        // apply transformations to context
-        ctx.save();
-        ctx.translate(contextTranslationOffset.x, contextTranslationOffset.y);
-        ctx.rotate(managedElement.wobble[wordIndex][charIndex][strokeIndex].rotation);
-        
-        // generate additional offset to center stroke around new origin
-        let newOffset = {
-          x: 0 - strokeOffset.x,
-          y: 0 - strokeOffset.y
-        };
-        
-        drawStroke(ctx, style, resizedStroke, newOffset);
-        
-        ctx.restore();
-      });
-    }
-  });
-}
-
-function drawChickenScratchCharacter(context, character, offset, style) {
-  character.forEach(stroke => {
-    drawChickenScratchStroke(context, stroke, offset, style) 
-  });  
-}
-
 function drawStroke(context, style, stroke, offset) {
   // 1 Draw main stroke
   context.beginPath();
@@ -283,10 +174,6 @@ function drawStroke(context, style, stroke, offset) {
   context.closePath();
   
   // 2 Add linecaps if necessary
-  // CHANGING COLOR JUST TO CHECK DIRECTION
-  // REMOVE LATER
-  //context.strokeStyle = 'black';
-  
   if (style.lineCap != 'butt' && !stroke.noLineCaps) {
     if (!Array.isArray(stroke)) {
       drawStartingLinecap(context, style, stroke, offset);  
@@ -296,10 +183,6 @@ function drawStroke(context, style, stroke, offset) {
       drawEndingLinecap(context, style, stroke[stroke.length - 1], offset);
     }
   }
-  
-  // JUST TO CHECK LINE CAP POSITION
-  // REMOVE LATER
-  //context.strokeStyle = style.color;
 
   // 3 Redraw main stroke if necessary
   if (style.lineCap != 'butt' && style.shadowVisibility) {
@@ -397,58 +280,6 @@ function drawEndingLinecap(context,style,stroke,offset) {
   context.lineCap = 'butt';
 }
 
-function calculateWordOffsets(canvas, managedElement) {
-  let style = styleDictionary.get(managedElement.styleName);
-  let words = managedElement.cleanedTextArray;
-  
-  // Determine width of each word 
-  let wordWidths = [];
-  words.forEach(word => {
-    wordWidths.push(calculateWordWidth(word, style));
-  });
-  
-  // Determine how many lines you will need to fit words
-  let currentWord = 0;
-  let lines = [[]];
-  let currentLine = 0;
-  let baseOffset = calculateBaseOffset(style);
-  let currentWidth = baseOffset.x;
-  let lineWidth = calculateLineWidth(canvas, style);
-  let charWidth = calculateCharWidth(style);
-  let charHeight = calculateCharHeight(style);
-  let wordOffsets = [];
-
-  // go through each word
-  while (currentWord < words.length) {
-    
-    // Move to the next line if necessary
-    if (currentWidth + wordWidths[currentWord] > lineWidth && lines[currentLine].length !== 0) {
-
-      lines.push([]);
-      currentLine++;
-      
-      // reset the width
-      currentWidth = baseOffset.x;
-    }
-
-    // add the current word to this line
-    lines[currentLine].push(words[currentWord]);
-
-    // log the x and y values at which it starts
-    wordOffsets.push({
-      x: currentWidth,
-      y: baseOffset.y + currentLine * charHeight
-    });
-
-    // add its width plus the width of the subsequent space to the current width
-    currentWidth += wordWidths[currentWord] + charWidth;
-    
-    currentWord++;
-  }
-  
-  return wordOffsets;
-}
-
 function calculateCharOffsetInWord(style, charIndex) {
   return {
     x: charIndex * calculateCharWidth(style),
@@ -456,7 +287,9 @@ function calculateCharOffsetInWord(style, charIndex) {
   };
 }
 
-function calculateStrokeOffset(stroke) {
+function calculateStrokeOffset(style, stroke) {
+  let { lineWidth } = style;
+  
   if (!Array.isArray(stroke)) {
     if (stroke.type === 'line') {
       return {
@@ -496,20 +329,11 @@ function calculateStrokeOffset(stroke) {
   }
 }
 
-function calculateLineWidth(canvasEl, style) {
-  let baseOffset = calculateBaseOffset(style);
-  
-  return canvasEl.width - (baseOffset.x * 2)
-}
-
 function calculateWordWidth(word, style) {
-  return word.length * calculateCharWidth(style);
-}
-
-function calculateWordWidth2(word, style) {
   let baseOffset = calculateBaseOffset(style);
+  let charWidth = calculateCharWidth(style);
   
-  return word.length * calculateCharWidth(style) + (baseOffset.x * 2);
+  return word.length * charWidth + (baseOffset.x * 2) - (charWidth * style.letterSpacing);
 }
 
 function calculateWordHeight(style) {
@@ -517,6 +341,8 @@ function calculateWordHeight(style) {
   
   return (style.size * style.lineHeight) + style.lineWidth + (baseOffset.y * 2);
 }
+
+
 
 function calculateCharWidth(style) {
   return ((style.size * .75) + style.lineWidth) * (1 + style.letterSpacing);
@@ -735,15 +561,35 @@ function calculateTranslationOffset(style,dimension) {
   }
 }
 
-function calculateSpacingOffset(style,dimension) {
-  switch (dimension) {
-    case 'x':
-      return style.letterSpacing * style.size * .75;
-      break;
-    case 'y':
-      return ((style.lineHeight - 1) / 2) * style.size;
-      break;
-  }
+function generateRandomRotation(style) {
+  return (Math.random() * degToRad(style.maxRotation * 2)) - (degToRad(style.maxRotation));
+}
+
+function generateRandomTranslation(style) {
+  return {
+    x: (Math.random() * style.maxTranslation * style.size * 2) - (style.maxTranslation * style.size),
+    y: (Math.random() * style.maxTranslation * style.size * 1.5) - (style.maxTranslation * style.size * .75)
+  };
+}
+
+function getStrokes(char) {
+  if (characters[char])  return characters[char];
+  
+  if (characters['_' + char]) return characters['_' + char];
+  
+  return null;
+}  
+
+function degToRad(deg) {
+  return (deg / 360) * Math.PI * 2;
+}
+
+/*
+
+function calculateLineWidth(canvasEl, style) {
+  let baseOffset = calculateBaseOffset(style);
+  
+  return canvasEl.width - (baseOffset.x * 2)
 }
 
 function calculateTextHeight(canvas, managedElement) {
@@ -799,27 +645,185 @@ function calculateTextHeight(canvas, managedElement) {
   return totalHeight;
 }
 
-function generateRandomRotation(style) {
-  return (Math.random() * degToRad(style.maxRotation * 2)) - (degToRad(style.maxRotation));
-}
-
-function generateRandomTranslation(style) {
-  return {
-    x: (Math.random() * style.maxTranslation * style.size * 2) - (style.maxTranslation * style.size),
-    y: (Math.random() * style.maxTranslation * style.size * 1.5) - (style.maxTranslation * style.size * .75)
-  };
-}
-
-function getStrokes(char) {
-  if (characters[char]) {
-    return characters[char];
-  } else if (characters['_' + char]) {
-    return characters['_' + char];
-  } else {
-    return null;
+function calculateSpacingOffset(style,dimension) {
+  switch (dimension) {
+    case 'x':
+      return style.letterSpacing * style.size * .75;
+      break;
+    case 'y':
+      return ((style.lineHeight - 1) / 2) * style.size;
+      break;
   }
-}  
-
-function degToRad(deg) {
-  return (deg / 360) * Math.PI * 2;
 }
+
+
+function calculateWordOffsets(canvas, managedElement) {
+  let style = styleDictionary.get(managedElement.styleName);
+  let words = managedElement.cleanedTextArray;
+  
+  // Determine width of each word 
+  let wordWidths = [];
+  words.forEach(word => {
+    wordWidths.push(calculateWordWidth(word, style));
+  });
+  
+  // Determine how many lines you will need to fit words
+  let currentWord = 0;
+  let lines = [[]];
+  let currentLine = 0;
+  let baseOffset = calculateBaseOffset(style);
+  let currentWidth = baseOffset.x;
+  let lineWidth = calculateLineWidth(canvas, style);
+  let charWidth = calculateCharWidth(style);
+  let charHeight = calculateCharHeight(style);
+  let wordOffsets = [];
+
+  // go through each word
+  while (currentWord < words.length) {
+    
+    // Move to the next line if necessary
+    if (currentWidth + wordWidths[currentWord] > lineWidth && lines[currentLine].length !== 0) {
+
+      lines.push([]);
+      currentLine++;
+      
+      // reset the width
+      currentWidth = baseOffset.x;
+    }
+
+    // add the current word to this line
+    lines[currentLine].push(words[currentWord]);
+
+    // log the x and y values at which it starts
+    wordOffsets.push({
+      x: currentWidth,
+      y: baseOffset.y + currentLine * charHeight
+    });
+
+    // add its width plus the width of the subsequent space to the current width
+    currentWidth += wordWidths[currentWord] + charWidth;
+    
+    currentWord++;
+  }
+  
+  return wordOffsets;
+}
+
+
+function drawChickenScratchCharacter(context, character, offset, style) {
+  character.forEach(stroke => {
+    drawChickenScratchStroke(context, stroke, offset, style) 
+  });  
+}
+
+
+function drawText(canvas, managedElement) {
+  // Get context and set its style
+  let ctx = canvas.getContext('2d');
+  let style = styleDictionary.get(managedElement.styleName);
+  applyStyleToContext(style, ctx);
+
+  // Get word widths
+  let wordOffsets = calculateWordOffsets(canvas, managedElement);
+  
+  let words = managedElement.cleanedTextArray;
+  
+  // go through each word
+  words.forEach((word, wordIndex) => {
+        
+    // go through each char
+    for (let charIndex = 0; charIndex < word.length; charIndex++) {
+        
+      // get char and its strokes
+      let char = word.charAt(charIndex);
+      let strokes = getStrokes(char);
+      
+      // go through each stroke 
+      strokes.forEach((stroke, strokeIndex) => {
+        
+        // resize stroke based on style size
+        let resizedStroke = JSON.parse(JSON.stringify(stroke));
+        resizeStroke(resizedStroke,style.size / 48);
+
+        // get char and stroke offsets
+        let wordOffset = wordOffsets[wordIndex];
+        let charOffset = calculateCharOffsetInWord(style, charIndex);
+        let strokeOffset = calculateStrokeOffset(resizedStroke);
+        let randomOffset = managedElement.wobble[wordIndex][charIndex][strokeIndex];
+        
+        let contextTranslationOffset = {
+          x: wordOffset.x + charOffset.x + strokeOffset.x + randomOffset.translation.x,
+          y: wordOffset.y + charOffset.y + strokeOffset.y + randomOffset.translation.y
+        };
+
+        // apply transformations to context
+        ctx.save();
+        ctx.translate(contextTranslationOffset.x, contextTranslationOffset.y);
+        ctx.rotate(managedElement.wobble[wordIndex][charIndex][strokeIndex].rotation);
+        
+        // generate additional offset to center stroke around new origin
+        let newOffset = {
+          x: 0 - strokeOffset.x,
+          y: 0 - strokeOffset.y
+        };
+        
+        drawStroke(ctx, style, resizedStroke, newOffset);
+        
+        ctx.restore();
+      });
+    }
+  });
+}
+
+
+function replaceElementAndDraw(originalElement, managedElement) {
+  
+  // Replace original element with canvas container
+  let canvasContainer = document.createElement('div');
+  canvasContainer.dataset.csId = managedElement.csId;
+  canvasContainer.style.width = '100%';
+  let parent = originalElement.parentElement;
+  parent.insertBefore(canvasContainer,originalElement);
+  parent.removeChild(originalElement);
+  
+  // Create new canvas element, draw text on it, and append to container
+  let newCanvas = document.createElement('canvas');
+  newCanvas.width = canvasContainer.clientWidth;
+  newCanvas.height = Math.ceil(calculateTextHeight(newCanvas,managedElement));
+  canvasContainer.style.height = newCanvas.height + 'px';
+  drawText(newCanvas, managedElement);
+  canvasContainer.appendChild(newCanvas);
+  
+  // Add resize listener
+  canvasContainer.dataset.resizeHandlerAppended = Date.now();
+  addResizeListener(canvasContainer, redrawCanvas);    
+}
+
+function redrawCanvas(e) {
+  
+  let container = e.target.parentElement.parentElement;
+  console.log('in redraw canvas for',container.dataset.csId);
+  
+  // This line is necessary b/c resize handler is firing once 
+  // as soon as it is attached. I don't know why
+  if (Date.now() - Number(container.dataset.resizeHandlerAppended) < 50) return; 
+  
+  // based on container's data-cs-id, get managedElement from map
+  let managedElement = managedElements.get(container.dataset.csId);
+  
+  // resize canvas based on new width
+  let canvas = container.querySelector('canvas');
+  canvas.width = container.clientWidth;
+  canvas.height = Math.ceil(calculateTextHeight(canvas,managedElement));
+  container.style.height = canvas.height + 'px';
+
+  // Draw text on the canvas
+  drawText(canvas, managedElement);
+}
+
+function calculateWordWidth(word, style) {
+  return word.length * calculateCharWidth(style);
+}
+
+
+*/

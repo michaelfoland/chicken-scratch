@@ -24,7 +24,7 @@ const chickenScratch = {
   lineWidth: 5,
   lineHeight: 1.4,
   letterSpacing: .2, // i.e, the space btw chars should be 20% (.20) of char width 
-  lineCap: 'square',
+  lineCap: 'butt',
   shadowVisibility: false, 
   shadowBlur: 6,
   shadowOffsetX: 4,

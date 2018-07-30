@@ -55,7 +55,7 @@ function propertyIsValid(style, propName) {
   if (!style.hasOwnProperty(propName)) return false;
 
   switch(propName) {
-    case 'lineWidth':
+    case 'strokeWidth':
       if (typeof style[propName] === 'number' && style[propName] >= 2) return true;
       break;
     case 'size':
@@ -76,9 +76,6 @@ function propertyIsValid(style, propName) {
     case 'shadowOffsetX':
     case 'shadowOffsetY':
       if (typeof style[propName] === 'number') return true;
-      break;
-    case 'shadowDraw':
-      if (typeof style[propName] === 'boolean') return true;
       break;
     case 'color':
     case 'shadowColor':

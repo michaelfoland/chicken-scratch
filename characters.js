@@ -670,6 +670,149 @@ const characters = {
             start: { x: 36, y: 18 },
             end: { x: 36, y: 49 }
           }
+      ],
+    _period: [
+        { 
+          type: 'ellipse',
+          bounds: { x1: 9, y1: 47, x2: 11, y2: 49},
+          start: 0,
+          end: Math.PI  * 2,
+          direction: 'clockwise'
+        }
+      ],
+    _comma: [
+              {
+                type: 'ellipse',
+                bounds: { x1: 5, y1: 1, x2: 15, y2: 49 },
+                start: Math.PI * .2,
+                end: Math.PI * .5,
+                direction: 'clockwise'
+
+              }
+      ],
+    _exclamation: [
+      {
+        type: 'line',
+        start: { x: 10, y: 1 },
+        end: {  x: 10, y: 33 }
+      },
+      { 
+        type: 'ellipse',
+        bounds: { x1: 9, y1: 47, x2: 11, y2: 49 },
+        start: 0,
+        end: Math.PI  * 2,
+        direction: 'clockwise'
+      }
+    ],
+    _question: [
+      [
+        {
+          type: 'ellipse',
+          bounds: { x1: 1, y1: 1, x2: 33, y2: 19 },
+          start: Math.PI * 1.2,
+          end: Math.PI * 0.52,
+          direction: 'clockwise'
+        },
+        {
+          type: 'line',
+          start: { x: 19, y: 19 },
+          end: { x: 19, y: 33 }
+        }
+      ],
+        { 
+          type: 'ellipse',
+          bounds: { x1: 24, y1: 47, x2: 26, y2: 49},
+          start: 0,
+          end: Math.PI  * 2,
+          direction: 'clockwise'
+        }
+    ],
+  _singleQuote: [
+    {
+      type: 'line',
+      start: { x: 19, y: 1 },
+      end: { x: 19, y: 13 }
+    }
+  ],
+  _doubleQuote: [
+    {
+      type: 'line',
+      start: { x: 10, y: 1 },
+      end: { x: 10, y: 11 }
+    },
+    {
+      type: 'line',
+      start: { x: 28, y: 1 },
+      end: { x: 28, y: 11 }
+    }
+  ],
+  _pound: [
+    {
+      type: 'line',
+      start: { x: 1, y: 17 },
+      end: { x: 37, y: 17 }
+    },
+    {
+      type: 'line',
+      start: { x: 1, y: 33 },
+      end: { x: 37, y: 33 }      
+    },
+    {
+      type: 'line',
+      start: { x: 13 , y: 1 },
+      end: { x: 13, y: 47 }      
+    },
+    {
+      type: 'line',
+      start: { x: 25, y: 1 },
+      end: { x: 25, y: 47 }      
+    }
+  ],
+  _dollar: [
+    [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 7, x2: 37, y2: 25 },
+        start: Math.PI * 1.8,
+        end: Math.PI * 0.48,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 25, x2: 37, y2: 43 },
+        start: Math.PI * 1.52,
+        end: Math.PI * 0.8,
+        direction: 'clockwise'        
+      }
+    ],
+    {
+      type: 'line',
+      start: { x: 19, y: 1 },
+      end: { x: 19, y : 49 }
+    }
+  ],
+  _percent: 
+    [
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 13, y2: 13 },
+        start: Math.PI * 3.75,
+        end: Math.PI * 1.73,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 37, y: 1 },
+        end: { x: 1, y: 49 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 24, y1: 36, x2: 37, y2: 49 },
+        start: Math.PI * 3.75,
+        end: Math.PI * 1.73,
+        direction: 'counter-clockwise'
+      }
     ]
+  
   
 };

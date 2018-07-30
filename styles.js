@@ -3,7 +3,7 @@ const badStyle = {
   maxTranslation: true,
   size: '-5',
   color: false,
-  lineWidth: 1,
+  strokeWidth: 1,
   lineHeight: -1,
   letterSpacing: -2,
   lineCap: 'squire',
@@ -17,14 +17,14 @@ const badStyle = {
 const chickenScratch = {
   name: 'chicken-scratch',
   camelName: 'chickenScratch',
-  maxRotation: 10,
-  maxTranslation: .10,
   size: 24, // not sure what value to use here; this is character height in px
   color: 'black',
-  lineWidth: 5,
+  strokeWidth: 2,
+  maxRotation: 10,
+  maxTranslation: .10,
   lineHeight: 1.4,
   letterSpacing: .2, // i.e, the space btw chars should be 20% (.20) of char width 
-  lineCap: 'square',
+  lineCap: 'butt',
   shadowVisibility: false, 
   shadowBlur: 6,
   shadowOffsetX: 4,
@@ -41,11 +41,11 @@ const chickenScratchSmall = {
 }
 
 const chickenScratchFat = {
-  lineWidth: 12
+  strokeWidth: 12
 }
 
 const chickenScratchThin = {
-  lineWidth: 2
+  strokeWidth: 2
 }
 
 const chickenScratchShadow = {
@@ -93,7 +93,7 @@ const chickenScratchRound = {
 const chickenScratchStraight = {
   maxRotation: 0,
   maxTranslation: 0,
-  lineWidth: 2,
+  strokeWidth: 2,
   lineCap: 'butt'
 };
 
@@ -104,7 +104,7 @@ const constructionPaper = {
   maxTranslation: .10,
   size: 72, 
   color: '#58b',
-  lineWidth: 12,
+  strokeWidth: 12,
   lineHeight: 1.25,
   letterSpacing: .25, 
   lineCap: 'square',

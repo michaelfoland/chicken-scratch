@@ -731,19 +731,19 @@ const characters = {
     {
       type: 'line',
       start: { x: 19, y: 1 },
-      end: { x: 19, y: 13 }
+      end: { x: 19, y: 19 }
     }
   ],
   _doubleQuote: [
     {
       type: 'line',
       start: { x: 10, y: 1 },
-      end: { x: 10, y: 11 }
+      end: { x: 10, y: 19 }
     },
     {
       type: 'line',
       start: { x: 28, y: 1 },
-      end: { x: 28, y: 11 }
+      end: { x: 28, y: 19 }
     }
   ],
   _pound: [
@@ -795,7 +795,7 @@ const characters = {
     [
       {
         type: 'ellipse',
-        bounds: { x1: 1, y1: 1, x2: 13, y2: 13 },
+        bounds: { x1: 1, y1: 1, x2: 16, y2: 16 },
         start: Math.PI * 3.75,
         end: Math.PI * 1.73,
         direction: 'counter-clockwise'
@@ -807,7 +807,7 @@ const characters = {
       },
       {
         type: 'ellipse',
-        bounds: { x1: 24, y1: 36, x2: 37, y2: 49 },
+        bounds: { x1: 21, y1: 33, x2: 37, y2: 49 },
         start: Math.PI * 3.75,
         end: Math.PI * 1.73,
         direction: 'counter-clockwise'

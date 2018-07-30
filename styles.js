@@ -17,14 +17,14 @@ const badStyle = {
 const chickenScratch = {
   name: 'chicken-scratch',
   camelName: 'chickenScratch',
-  size: 24, // not sure what value to use here; this is character height in px
+  size: 36, // not sure what value to use here; this is character height in px
   color: 'black',
-  strokeWidth: 2,
+  strokeWidth: 5,
   maxRotation: 10,
   maxTranslation: .10,
   lineHeight: 1.4,
   letterSpacing: .2, // i.e, the space btw chars should be 20% (.20) of char width 
-  lineCap: 'butt',
+  lineCap: 'square',
   shadowVisibility: false, 
   shadowBlur: 6,
   shadowOffsetX: 4,

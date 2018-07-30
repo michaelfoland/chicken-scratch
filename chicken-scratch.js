@@ -1,4 +1,21 @@
+import { Style } from './Style.js';
+
+let styleDictionary = new Map(); // this will hold all styles
+styleDictionary.set('chickenScratch',new Style('chicken-scratch',{}))
+
 let managedElements = new Map(); // This will hold all info needed to properly draw each text
+
+// THIS SHOULD BE PUBLIC
+function registerStyle(name, style) {
+  if (name == 'chicken-scratch' || name == 'chickenScratch' ) return; // bail if user provides bad name
+  
+  let newStyle = new Style(name, style);
+  
+  // When done, register style
+  styleDictionary.set(style.camelName, newStyle);
+}
+
+apply();
 
 function apply() {
   // 1 FETCH ALL ELEMENTS TO MODIFY
@@ -35,16 +52,16 @@ function addCanvasesAndDraw(originalElement, managedElement) {
   let { styleName, words, transforms, csId } = managedElement;
   
   let style = styleDictionary.get(managedElement.styleName);
-  
+
   // Clean out original element and give it a csId
   originalElement.innerHTML = '';
   originalElement.dataset.csId = csId;
   
-  let charWidth = calculateCharWidth(style);
+  let charWidth = style.charWidth;
   
   words.forEach((word, index) => {
-    let wordSize = calculateWordSize(word, style); // not sure I need this here?  maybe for setting margins?
-    let canvasSize = calculateCanvasSize(word, style);
+    let wordSize = style.calculateWordSize(word); 
+    let canvasSize = style.calculateCanvasSize(word);
     
     // create new canvas
     let newCanvas = document.createElement('canvas');
@@ -53,8 +70,8 @@ function addCanvasesAndDraw(originalElement, managedElement) {
     newCanvas.height = canvasSize.y;
 
     // set canvas margins to produce appropriate word spacing and line height
-    xMargin = ((charWidth / 2) - ((canvasSize.x - wordSize.x) / 2)) + 'px';
-    yMargin = (0 - ((canvasSize.y - wordSize.y) / 2)) + 'px';
+    let xMargin = ((charWidth / 2) - ((canvasSize.x - wordSize.x) / 2)) + 'px';
+    let yMargin = (0 - ((canvasSize.y - wordSize.y) / 2)) + 'px';
     newCanvas.style.margin = yMargin + ' ' + xMargin;
     
     drawWord(newCanvas, style, word, transforms[index])
@@ -67,7 +84,7 @@ function drawWord(canvas, style, word, transforms) {
   let ctx = canvas.getContext('2d');
   applyStyleToContext(style, ctx);
   
-  let baseOffset = calculateBaseOffset(style);
+  let baseOffset = style.baseOffset;
   
   for (let charIndex = 0; charIndex < word.length; charIndex++) {
     // get char and strokes
@@ -137,8 +154,8 @@ function generateStrokeTransforms(style, text) {
         
         // and generate a random rotation and translation
         specs[wordIndex][charIndex].push({
-          rotation: generateRandomRotation(style),
-          translation: generateRandomTranslation(style)
+          rotation: style.generateRandomRotation(),
+          translation: style.generateRandomTranslation()
         });    
       }
     }
@@ -296,7 +313,7 @@ function drawEndingLinecap(context,style,stroke,offset) {
 
 function calculateCharOffsetInWord(style, charIndex) {
   return {
-    x: charIndex * calculateCharWidth(style),
+    x: charIndex * style.charWidth,
     y: style.size * ((style.lineHeight - 1) / 2)
   };
 }
@@ -341,63 +358,6 @@ function calculateStrokeOffset(style, stroke) {
       y: (Math.max(...allY) + Math.min(...allY)) / 2
     };
   }
-}
-
-function calculateWordSize(word, style) {
-  let charWidth = calculateCharWidth(style);
-  
-  return {
-    x: (word.length * charWidth)  - (charWidth * style.letterSpacing),
-    y: calculateCharHeight(style)
-  };
-}
-
-function calculateCanvasSize(word, style) {
-  let baseOffset = calculateBaseOffset(style);
-  let charWidth = calculateCharWidth(style);
-  
-  let shadow = {x: 0, y: 0};
-  
-  if (style.shadowVisibility) {
-    shadow = {
-      x: style.shadowOffsetX + style.shadowBlur,
-      y: style.shadowOffsetY + style.shadowBlur
-    }
-  }
-  
-  return {
-    x: (word.length * charWidth) + (baseOffset.x * 2) - calculateLetterSpacing(style) + shadow.x + 1,
-    y: (baseOffset.y * 2) + calculateCharHeight(style) + shadow.y + 1
-  };
-}
-
-function calculateWordHeight(style) {
-  let baseOffset = calculateBaseOffset(style);
-  
-  return (style.size * style.lineHeight) + style.strokeWidth + (baseOffset.y * 2);
-}
-
-function calculateCharWidth(style) {
-  return ((style.size * .75) + style.strokeWidth) * (1 + style.letterSpacing);
-}
-
-function calculateLetterSpacing(style) {
-  return ((style.size * .75) + style.strokeWidth) * style.letterSpacing;
-}
-    
-function calculateCharHeight(style) {
-  return (style.size + style.strokeWidth) * style.lineHeight;
-}
-
-function calculateBaseOffset(style) {
-  return {
-    x: calculateRotationOffset(style,'x') +
-      calculateTranslationOffset(style,'x') +
-      calculateLineWidthOffset(style,'x'),
-    y: calculateRotationOffset(style,'y') +
-      calculateTranslationOffset(style,'y') +
-      calculateLineWidthOffset(style,'y')
-  };
 }
 
 function getLineCapAnchors(startOrEnd, stroke, offset) {
@@ -561,54 +521,6 @@ function resizeEllipse(ellipse, sizeRatio) {
   }
 }
 
-// Uses the maxRotation, strokeWidth, and lineCap props of a style
-// to determine the extra width a rotated stroke might get
-// from the width of the stroke
-function calculateLineWidthOffset(style) {
-  switch (style.lineCap) {
-    case 'butt':
-      return Math.sin((Math.PI / 2) - degToRad(style.maxRotation)) * style.strokeWidth * .5;
-      break;
-    case 'square':
-      return Math.sin((Math.PI / 4) + degToRad(style.maxRotation)) * Math.sqrt(2 * Math.pow(style.strokeWidth * .5,2));
-      break;
-    case 'round':
-      return style.strokeWidth * .5;
-      break;
-  }
-}
-
-function calculateRotationOffset(style,dimension) {
-  switch (dimension) {
-    case 'x':
-      return Math.sin(degToRad(style.maxRotation)) * (style.size / 2);
-      break;
-    case 'y':
-      return Math.sin(degToRad(style.maxRotation)) * ((style.size * .75) / 2);
-  }
-}
-
-function calculateTranslationOffset(style,dimension) {
-  switch (dimension) {
-    case 'x':
-      return style.maxTranslation * style.size * .75;
-      break;
-    case 'y':
-      return style.maxTranslation * style.size;
-  }
-}
-
-function generateRandomRotation(style) {
-  return (Math.random() * degToRad(style.maxRotation * 2)) - (degToRad(style.maxRotation));
-}
-
-function generateRandomTranslation(style) {
-  return {
-    x: (Math.random() * style.maxTranslation * style.size * 2) - (style.maxTranslation * style.size),
-    y: (Math.random() * style.maxTranslation * style.size * 1.5) - (style.maxTranslation * style.size * .75)
-  };
-}
-
 function getStrokes(char) {
   console.log('in getStrokes()');
   // handle letters
@@ -664,3 +576,120 @@ function getStrokes(char) {
 function degToRad(deg) {
   return (deg / 360) * Math.PI * 2;
 }
+
+
+// CODE FARMED OUT TO STYLE.JS
+/*
+function generateRandomRotation(style) {
+  return (Math.random() * degToRad(style.maxRotation * 2)) - (degToRad(style.maxRotation));
+}
+
+function generateRandomTranslation(style) {
+  return {
+    x: (Math.random() * style.maxTranslation * style.size * 2) - (style.maxTranslation * style.size),
+    y: (Math.random() * style.maxTranslation * style.size * 1.5) - (style.maxTranslation * style.size * .75)
+  };
+}
+*/
+
+
+/*
+
+function calculateWordSize(word, style) {
+  let charWidth = calculateCharWidth(style);
+  
+  return {
+    x: (word.length * charWidth)  - (charWidth * style.letterSpacing),
+    y: calculateCharHeight(style)
+  };
+}
+
+function calculateCanvasSize(word, style) {
+  let baseOffset = calculateBaseOffset(style);
+  let charWidth = calculateCharWidth(style);
+  
+  let shadow = {x: 0, y: 0};
+  
+  if (style.shadowVisibility) {
+    shadow = {
+      x: style.shadowOffsetX + style.shadowBlur,
+      y: style.shadowOffsetY + style.shadowBlur
+    }
+  }
+  
+  return {
+    x: (word.length * charWidth) + (baseOffset.x * 2) - calculateLetterSpacing(style) + shadow.x + 1,
+    y: (baseOffset.y * 2) + calculateCharHeight(style) + shadow.y + 1
+  };
+}
+
+/*
+function calculateWordHeight(style) {
+  let baseOffset = calculateBaseOffset(style);
+  
+  return (style.size * style.lineHeight) + style.strokeWidth + (baseOffset.y * 2);
+}
+
+function calculateCharWidth(style) {
+  return ((style.size * .75) + style.strokeWidth) * (1 + style.letterSpacing);
+}
+
+function calculateLetterSpacing(style) {
+  return ((style.size * .75) + style.strokeWidth) * style.letterSpacing;
+}
+    
+function calculateCharHeight(style) {
+  return (style.size + style.strokeWidth) * style.lineHeight;
+}
+
+function calculateBaseOffset(style) {
+  let 
+  
+  return {
+    x: calculateRotationOffset(style,'x') +
+      calculateTranslationOffset(style,'x') +
+      calculateLineWidthOffset(style,'x'),
+    y: calculateRotationOffset(style,'y') +
+      calculateTranslationOffset(style,'y') +
+      calculateLineWidthOffset(style,'y')
+  };
+}
+
+// Uses the maxRotation, strokeWidth, and lineCap props of a style
+// to determine the extra width a rotated stroke might get
+// from the width of the stroke
+function calculateLineWidthOffset(style) {
+  switch (style.lineCap) {
+    case 'butt':
+      return Math.sin((Math.PI / 2) - degToRad(style.maxRotation)) * style.strokeWidth * .5;
+      break;
+    case 'square':
+      return Math.sin((Math.PI / 4) + degToRad(style.maxRotation)) * Math.sqrt(2 * Math.pow(style.strokeWidth * .5,2));
+      break;
+    case 'round':
+      return style.strokeWidth * .5;
+      break;
+  }
+}
+
+function calculateRotationOffset(style,dimension) {
+  switch (dimension) {
+    case 'x':
+      return Math.sin(degToRad(style.maxRotation)) * (style.size / 2);
+      break;
+    case 'y':
+      return Math.sin(degToRad(style.maxRotation)) * ((style.size * .75) / 2);
+  }
+}
+
+function calculateTranslationOffset(style,dimension) {
+  switch (dimension) {
+    case 'x':
+      return style.maxTranslation * style.size * .75;
+      break;
+    case 'y':
+      return style.maxTranslation * style.size;
+  }
+}
+*/
+

@@ -1,6 +1,8 @@
 import { Style } from './Style.js';
+import { getStrokes } from './characters.js';
 
-let styleDictionary = new Map(); // this will hold all styles
+// Create style dictionary and add default style
+let styleDictionary = new Map(); 
 styleDictionary.set('chickenScratch',new Style('chicken-scratch',{}))
 
 let managedElements = new Map(); // This will hold all info needed to properly draw each text
@@ -14,6 +16,7 @@ function registerStyle(name, style) {
   // When done, register style
   styleDictionary.set(style.camelName, newStyle);
 }
+
 
 apply();
 
@@ -92,6 +95,7 @@ function drawWord(canvas, style, word, transforms) {
     let strokes = getStrokes(char);
     
     let charOffset = calculateCharOffsetInWord(style, charIndex);
+    
     
     // go through each stroke
     strokes.forEach((stroke, strokeIndex) => {
@@ -176,10 +180,12 @@ function applyStyleToContext(style, ctx) {
   }
 }
 
+
+// probably move this to character.js soon as well
 function cleanText(text) {
-    text = text.toUpperCase(); // for now only; change this when we add lowercase
+    // text = text.toUpperCase(); // for now only; change this when we add lowercase
   
-    let regex1 = /[^A-Z1-9\s.,!?'"#$%]/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
+    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/{}\[\]]/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
     text = text.replace(regex1,'');
   
     // reduce each group of consecutive whitespace chars down to one single space
@@ -519,60 +525,4 @@ function resizeEllipse(ellipse, sizeRatio) {
   for (let value in ellipse.bounds) {
     ellipse.bounds[value] = applySizeRatio(ellipse.bounds[value], sizeRatio);
   }
-}
-
-function getStrokes(char) {
-  console.log('in getStrokes()');
-  // handle letters
-  let letterRegex = /[a-zA-Z]/;
-  let numRegex = /[1-9]/; // sorry, no zero yet!
-  let puncRegex = /[.,!?'"#$%]/;
-  
-  if (letterRegex.exec(char))  return characters[char];
-  
-  if (numRegex.exec(char)) return characters['_' + char];
-  
-  if (puncRegex.exec(char)) {
-    console.log('in puncRegex if block');
-    
-    let propName = '';
-    switch(char) {
-      case '.':
-        propName = '_period';
-        break;
-      case ',':
-        propName = '_comma';
-        break;
-      case '!':
-        propName = '_exclamation';
-        break;
-      case '?':
-        propName = '_question';
-        break;
-      case '\'': 
-        propName = '_singleQuote';
-        break;
-      case '"':
-        propName = '_doubleQuote';
-        break;
-      case '#':
-        propName = '_pound';
-        break;
-      case '$':
-        propName = '_dollar';
-        break;
-      case '%':
-        propName = '_percent';
-        break;
-      // add more punctuation as it becomes available
-    }
-    
-    return characters[propName];
-  }
-  
-  return null;
-}  
-
-function degToRad(deg) {
-  return (deg / 360) * Math.PI * 2;
 }

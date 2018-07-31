@@ -1,4 +1,114 @@
+export function getStrokes(char) {
+  console.log('in getStrokes()');
+  // handle letters
+  let letterRegex = /[a-zA-Z]/;
+  let numRegex = /[1-9]/; // sorry, no zero yet!
+  // let puncRegex = /[.,!?'"#$%]/;
+  
+  if (letterRegex.exec(char))  return characters[char];
+  
+  if (numRegex.exec(char)) return characters['_' + char];
+  
+  return characters[specialCharMap.get(char)];  
+}  
+
+
+const specialCharMap = new Map();
+  
+specialCharMap.set('.','_period');
+specialCharMap.set(',','_comma');
+specialCharMap.set('!','_exclamation');
+specialCharMap.set('?','_question');
+specialCharMap.set('\'','_singleQuote');
+specialCharMap.set('"','_doubleQuote');
+specialCharMap.set('@','_at');
+specialCharMap.set('#','_pound');
+specialCharMap.set('$','_dollar');
+specialCharMap.set('%','_percent');
+specialCharMap.set('^','_caret');
+specialCharMap.set('&','_ampersand');
+specialCharMap.set('*','_asterisk');
+specialCharMap.set('(','_leftParen');
+specialCharMap.set(')','_rightParen');
+specialCharMap.set('-','_hyphen');
+specialCharMap.set('+','_plus');
+specialCharMap.set('=','_equal');
+specialCharMap.set(':','_colon');
+specialCharMap.set(';','_semiColon');
+specialCharMap.set('/','_slash');
+specialCharMap.set('\\','_backSlash');
+specialCharMap.set('{','_leftBrace');
+specialCharMap.set('}','_rightBrace');
+specialCharMap.set('[','_leftBracket');
+specialCharMap.set(']','_rightBracket');
+
+
 const characters = {
+  a: [ 
+    {
+      type: 'ellipse',
+      bounds: { x1: 2, y1: 16, x2: 35, y2: 49 },
+      start: Math.PI * 3.72,
+      end: Math.PI * 1.7,
+      direction: 'counter-clockwise'
+    },
+    {
+      type: 'line',
+      start: { x: 36, y: 16 },
+      end: { x: 36, y: 49 }
+    }
+  ],
+  b: [
+    {
+      type: 'line',
+      start: { x: 2, y: 1 },
+      end: { x: 2, y: 49 },
+    },
+    {
+      type: 'ellipse',
+      bounds: { x1: 3, y1: 16, x2: 36, y2: 49 },
+      start: Math.PI * 3.72,
+      end: Math.PI * 1.7,
+      direction: 'counter-clockwise'
+    }
+  ],
+  c: [
+    {
+      type: 'ellipse',
+      bounds: {x1:2, y1: 16, x2: 36, y2: 49},
+      start: Math.PI * 1.8,
+      end: Math.PI * 0.2,
+      direction: 'counter-clockwise'
+    }
+  ],
+  d: [
+    {
+      type: 'ellipse',
+      bounds: { x1: 2, y1: 16, x2: 35, y2: 49 },
+      start: Math.PI * 3.72,
+      end: Math.PI * 1.7,
+      direction: 'counter-clockwise'
+    },
+    {
+      type: 'line',
+      start: { x: 36, y: 1 },
+      end: { x: 36, y: 49 },
+    }    
+  ],
+  e: [
+    {
+      type: 'ellipse',
+      bounds: {x1:2, y1: 16, x2: 36, y2: 49},
+      start: Math.PI * 1.9,
+      end: Math.PI * 0.15,
+      direction: 'counter-clockwise'
+    },
+    {
+      type: 'line',
+      start: { x: 3, y: 30 },
+      end: { x: 35, y: 30 }
+    }
+  ],
   A: [
       {
         type: 'line',
@@ -681,14 +791,13 @@ const characters = {
         }
       ],
     _comma: [
-              {
-                type: 'ellipse',
-                bounds: { x1: 5, y1: 1, x2: 15, y2: 49 },
-                start: Math.PI * .2,
-                end: Math.PI * .5,
-                direction: 'clockwise'
-
-              }
+        {
+          type: 'ellipse',
+          bounds: { x1: 5, y1: 1, x2: 15, y2: 49 },
+          start: Math.PI * .2,
+          end: Math.PI * .5,
+          direction: 'clockwise'
+        }
       ],
     _exclamation: [
       {
@@ -812,7 +921,212 @@ const characters = {
         end: Math.PI * 1.73,
         direction: 'counter-clockwise'
       }
+    ],
+  _at: [
+    [
+      {
+        type: 'ellipse',
+        bounds: { x1: 13, y1: 11, x2: 27, y2: 39 },
+        start: Math.PI * 1.8,
+        end: Math.PI * 0.2,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 26, y: 37 },
+        end: { x: 26, y: 18 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 27, y1: 25, x2: 37, y2: 41 },
+        start: Math.PI * .9,
+        end: 0,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 37, y: 34 },
+        end: { x: 37, y: 19 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 1, x2: 37, y2: 41},
+        start: 0,
+        end: Math.PI,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 1, y: 17 },
+        end: { x: 1, y: 28}
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, y1: 5, x2: 37, y2: 49 },
+        start: Math.PI,
+        end: Math.PI * .75,
+        direction: 'counter-clockwise'
+      }
     ]
-  
-  
+  ],
+  _caret: [
+    {
+      type: 'line',
+      start: { x: 19, y: 1 },
+      end: { x: 7, y: 17 }
+    },
+    {
+      type: 'line',
+      start: { x: 19, y: 1 },
+      end: { x: 31, y: 17 }
+    }
+  ],
+  _ampersand: [
+    [
+      {
+        type: 'line',
+        start: { x: 37, y: 49 },
+        end: { x: 7, y: 19 }
+      },
+      { 
+        type: 'ellipse',
+        bounds: { x1: 3, y1: 1, x2: 21, y2: 21 },
+        start: Math.PI * .7,
+        end: Math.PI * .35,
+        direction: 'clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 16, y: 20 },
+        end: {x: 6, y: 27 }
+      },
+      {
+        type: 'ellipse',
+        bounds: { x1: 1, x2: 25, y1: 25, y2: 49 },
+        start: Math.PI * 1.3,
+        end: Math.PI * .15,
+        direction: 'counter-clockwise'
+      },
+      {
+        type: 'line',
+        start: { x: 23, y: 43 },
+        end: { x: 33, y: 29 }
+      }
+    ]
+  ],
+  _asterisk: [
+    { 
+      type: 'line',
+      start: { x: 19, y: 5 },
+      end: { x: 19, y: 41 }
+    },
+    { 
+      type: 'line',
+      start: { x: 3.4, y: 14 },
+      end: { x: 34.6, y: 32}
+    },
+    {
+      type: 'line',
+      start: { x: 34.6, y: 14},
+      end: { x: 3.4, y: 32}
+    }
+  ],
+  _leftParen: [
+    {
+      type: 'ellipse',
+      bounds: {x1: 10, y1: -7, x2: 78, y2: 57 },
+      start: Math.PI * 1.28,
+      end: Math.PI * .72,
+      direction: 'counter-clockwise'
+    }
+  ],
+  _rightParen: [
+    {
+      type: 'ellipse',
+      bounds: {x1: -40, y1: -7, x2: 29 , y2: 57 },
+      start: Math.PI * 1.72,
+      end: Math.PI * .28,
+      direction: 'clockwise'
+    }
+  ],
+  _hyphen: [
+    {
+      type: 'line',
+      start: { x: 7, y: 25 },
+      end: { x: 31, y: 25 }
+    }
+  ],
+  _plus: [
+    {
+      type: 'line',
+      start: { x: 7, y: 25 },
+      end: { x: 31, y: 25 }
+    },
+    {
+      type: 'line',
+      start: { x: 19, y: 7 },
+      end: { x: 19, y: 43 }
+    }
+  ],
+  _equal: [
+    {
+      type: 'line',
+      start: { x: 7, y: 17 },
+      end: { x: 31, y: 17 }
+    },
+    {
+      type: 'line',
+      start: { x: 7, y: 33 },
+      end: { x: 31, y: 33 }
+    }
+  ],
+  _colon: [
+    {
+      type: 'ellipse',
+      bounds: { x1: 9, y1: 18, x2: 11, y2: 20},
+      start: 0,
+      end: Math.PI  * 2,
+      direction: 'clockwise'
+    },
+    {
+      type: 'ellipse',
+      bounds: { x1: 9, y1: 43, x2: 11, y2: 45},
+      start: 0,
+      end: Math.PI  * 2,
+      direction: 'clockwise'
+    }
+  ],
+  _semiColon: [
+    {
+      type: 'ellipse',
+      bounds: { x1: 9, y1: 18, x2: 11, y2: 20},
+      start: 0,
+      end: Math.PI  * 2,
+      direction: 'clockwise'
+    },
+    {
+      type: 'ellipse',
+      bounds: { x1: 5, y1: 1, x2: 15, y2: 49 },
+      start: Math.PI * .2,
+      end: Math.PI * .5,
+      direction: 'clockwise'
+    }
+
+  ],
+  _slash: [
+    {
+      type: 'line',
+      start: { x: 1, y: 1 },
+      end: { x: 37, y: 49 }
+    }
+  ],
+  _backSlash: [
+    {
+      type: 'line',
+      start: { x: 37, y: 1 },
+      end: { x: 1, y: 49 }
+    }
+  ]
 };
+
+

@@ -1,19 +1,3 @@
-const defaultProps = {
-  size: 36,
-  color: 'black',
-  strokeWidth: 5,
-  maxRotation: 10,
-  maxTranslation: .10,
-  lineHeight: 1.4,
-  letterSpacing: .2,
-  lineCap: 'square',
-  shadowVisibility: false, 
-  shadowBlur: 6,
-  shadowOffsetX: 4,
-  shadowOffsetY: 2,
-  shadowColor: '#555'  
-}
-
 export class Style {
   constructor(name, styleProps) {
     this.name = name;
@@ -123,6 +107,22 @@ export class Style {
       y: this.maxTranslation * this.size
     }
   }  
+}
+
+const defaultProps = {
+  size: 36,
+  color: 'black',
+  strokeWidth: 2,
+  maxRotation: 0,
+  maxTranslation: .0,
+  lineHeight: 1.4,
+  letterSpacing: .2,
+  lineCap: 'square',
+  shadowVisibility: false, 
+  shadowBlur: 6,
+  shadowOffsetX: 4,
+  shadowOffsetY: 2,
+  shadowColor: '#555'  
 }
 
 function degToRad(deg) {

@@ -185,7 +185,7 @@ function applyStyleToContext(style, ctx) {
 function cleanText(text) {
     // text = text.toUpperCase(); // for now only; change this when we add lowercase
   
-    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/{}\[\]]/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
+    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/<>{}\[\]]/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
     text = text.replace(regex1,'');
   
     // reduce each group of consecutive whitespace chars down to one single space

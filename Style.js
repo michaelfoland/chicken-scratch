@@ -112,9 +112,9 @@ export class Style {
 const defaultProps = {
   size: 36,
   color: 'black',
-  strokeWidth: 2,
-  maxRotation: 0,
-  maxTranslation: .0,
+  strokeWidth: 5,
+  maxRotation: 8,
+  maxTranslation: .08,
   lineHeight: 1.4,
   letterSpacing: .2,
   lineCap: 'square',

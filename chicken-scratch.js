@@ -1,64 +1,101 @@
 import { Style } from './Style.js';
 import { getStrokes } from './characters.js';
 
+// Create style dictionary and add default style
+let styleDictionary = new Map(); 
+styleDictionary.set('chicken-scratch',new Style('chicken-scratch',{}))
+
+// A map containing all elements with a chicken-scratch class
+let managedElements = new Map(); 
+
 export const ChickenScratch = {
   registerStyle: registerStyle,
-  apply: apply
-  // addStyleToEl: IMPLEMENT THIS,
-  // removeStyleFromEl: IMPLEMENT THIS
+  apply: apply,
+  addStyleToEl: addStyleToEl,
+  removeStyleFromEl: removeStyleFromEl
 };
 
-
-// THIS SHOULD BE PUBLIC
 function registerStyle(name, style) {
   if (name == 'chicken-scratch' || name == 'chickenScratch' ) return; // bail if user provides bad name
 
   // Create and register new style
   let newStyle = new Style(name, style);
   
-  styleDictionary.set(newStyle.camelName, newStyle);
+  // styleDictionary.set(newStyle.camelName, newStyle);
+  styleDictionary.set(newStyle.name, newStyle);
 }
 
 function apply() {
-  // 1 FETCH ALL ELEMENTS TO MODIFY
   styleDictionary.forEach(style => {
     let originalElements = Array.from(document.getElementsByClassName(style.name));
-
+  
     // go through each element
-    originalElements.forEach((originalElement, index) => {
+    originalElements.forEach((originalElement) => {
 
-      // get text content, process it, store the style, generate wobbles, save it to map
-      let managedElement = {}; // this name sucks; what would be better?
-      managedElement.originalText = originalElement.textContent;
-      managedElement.words = cleanText(originalElement.textContent).split(' ');
-      managedElement.styleName = style.camelName;
-      managedElement.csId = style.name + '-' + index;
-      managedElement.transforms = generateStrokeTransforms(style, managedElement.words); 
-      managedElements.set(style.name + '-' + index, managedElement);
+      // get text content, process it, store the style, generate transforms, save it to map
+      let managedElement = processElement(originalElement, style);
 
-      // replace element with canvasContainer/canvas and draw
-      // replaceElementAndDraw(originalElement, managedElement);
-
-      // NEW IMPLEMENTATION USING MULTIPLE CANVASES FOR EACH TEXT
+      // draw text on canvases
       addCanvasesAndDraw(originalElement, managedElement);
     });
   });
 }
 
-// Create style dictionary and add default style
-let styleDictionary = new Map(); 
-styleDictionary.set('chickenScratch',new Style('chicken-scratch',{}))
+function processElement(originalElement, style) {
+  let managedElement = {}; 
+  managedElement.originalText = originalElement.textContent;
+  managedElement.words = cleanText(originalElement.textContent).split(' ');
+  managedElement.innerHTML = originalElement.innerHTML;
+  managedElement.styleName = style.name;
+  managedElement.csId = style.newId;
+  managedElement.transforms = generateStrokeTransforms(style, managedElement.words); 
+  managedElements.set(managedElement.csId, managedElement);
+  
+  return managedElement;
+}
 
-let managedElements = new Map(); // This will hold all info needed to properly draw each text
+function addStyleToEl(styleName, element) {
+  // If element already has a csId
+  if (element.dataset.csId) {
+    
+    // get managed element & new style
+    let managedEl = managedElements.get(element.dataset.csId);
+    let style = styleDictionary.get(styleName);
+    
+    // change relevant props of managed element to match new style
+    managedEl.styleName = style.name;
+    managedEl.csId = style.newId;
+    managedEl.transforms = generateStrokeTransforms(style, managedEl.words); 
+    
+    addCanvasesAndDraw(element, managedEl);
+    
+  } else {
+    // get style, process new el and draw it
+    let style = styleDictionary.get(styleName);
+    let managedElement = processElement(element, style);
+    addCanvasesAndDraw(element, managedElement);
+  }
+}
+
+function removeStyleFromEl(element) {
+  // Confirm that element has a csId
+  if (element.dataset.csId) {
+    // get element
+    let managedEl = managedElements.get(element.dataset.csId);
+
+    // remove item from managedElement collection,
+    // remove data-cs-id attr from element
+    managedElements.delete(managedEl.csId);
+    element.removeAttribute('data-cs-id');
+
+    // revert to initial html
+    element.innerHTML = managedEl.innerHTML;
+  }
+}
 
 function addCanvasesAndDraw(originalElement, managedElement) {
-  // Get style from style dictionary
-  let { styleName, words, transforms, csId } = managedElement;
-  
   let style = styleDictionary.get(managedElement.styleName);
-
-  console.log('in addCanvasesAndDraw(), managedElement =',managedElement);
-  console.log('\tstyleDictionary = ',styleDictionary);
+  let { styleName, words, transforms, csId } = managedElement;
   
   // Clean out original element and give it a csId
   originalElement.innerHTML = '';
@@ -185,7 +222,7 @@ function applyStyleToContext(style, ctx) {
 function cleanText(text) {
     // text = text.toUpperCase(); // for now only; change this when we add lowercase
   
-    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/<>{}\[\]]/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
+    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/<>{}\[\]]~`_|/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
     text = text.replace(regex1,'');
   
     // reduce each group of consecutive whitespace chars down to one single space

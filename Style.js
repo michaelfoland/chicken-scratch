@@ -2,7 +2,8 @@ export class Style {
   constructor(name, styleProps) {
     
     this.name = name;
-    this.camelName = kebabToCamel(name);
+    this.instances = 0;
+    // this.camelName = kebabToCamel(name);
     
     // Go through each key in the default props
     // and validate it on the test style
@@ -59,6 +60,12 @@ export class Style {
 
   // NOTE: This was originally called letterSpacing, but we
   // already have a prop on Style called letterSpacing
+  get newId() {
+    this.instances++;
+    return this.name + '-' + this.instances;
+    
+  }
+  
   get charGap() {
     return ((this.size * .75) + this.strokeWidth) * this.letterSpacing;
   }
@@ -114,11 +121,11 @@ export class Style {
 }
 
 const defaultProps = {
-  size: 24,
+  size: 48,
   color: 'black',
-  strokeWidth: 3,
-  maxRotation: 12,
-  maxTranslation: .08,
+  strokeWidth: 2,
+  maxRotation: 0,
+  maxTranslation: .0,
   lineHeight: 1.3,
   letterSpacing: 0,
   lineCap: 'butt',
@@ -173,6 +180,7 @@ function propertyIsValid(style, propName) {
 
 // I'm sure there's a better way to implement
 // this, probably with Regexp, but this was what came to mind at the time
+/*
 function kebabToCamel(kebab) {
   // find all hyphens
   let index = 0;
@@ -199,28 +207,33 @@ function kebabToCamel(kebab) {
 
   return kebab;
 }
-
+*/
 
 function colorIsValid(testColor) {
+  let  returnVal = false;
   // Create an element and append it to body
+  let body = document.getElementsByTagName('body')[0]
+  
   let colorChecker = document.createElement('div');
   colorChecker.style.position = 'absolute';
   colorChecker.style.opacity = 0;
-  document.getElementsByTagName('body')[0].appendChild(colorChecker);
+  body.appendChild(colorChecker);
   
   // Set original color and test updated color
   colorChecker.style.color = 'rgb(255,255,255)';
   let originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
   colorChecker.style.color = testColor;
   let updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
-  if (updatedColor != originalColor) return true;
+  if (updatedColor != originalColor) returnVal = true;
   
   // if necessary, test again with a different original color
   colorChecker.style.color = 'rgb(0,0,0)';
   originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
   colorChecker.style.color = testColor;
   updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
-  if (updatedColor != originalColor) return true;
+  if (updatedColor != originalColor) returnVal = true;
   
-  return false;
+  body.removeChild(colorChecker);
+  
+  return returnVal;
 }

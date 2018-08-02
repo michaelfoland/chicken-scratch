@@ -1,5 +1,6 @@
 import { ChickenScratch } from './chicken-scratch.js';
 
+// Register custom styles
 ChickenScratch.registerStyle('cs-green',{color: '#396'});
 ChickenScratch.registerStyle('cs-big',{size: 60, lineHeight: 1.1});
 ChickenScratch.registerStyle('cs-heavy',{strokeWidth: 8});
@@ -30,4 +31,20 @@ ChickenScratch.registerStyle('cs-construction-paper',{
 });
 
 
+// Apply styles
 ChickenScratch.apply();
+
+// Add a click listener to apply style to other element
+let addButton = document.getElementById('addStyle');
+let removeButton = document.getElementById('removeStyle');
+
+addButton.addEventListener('click', function() {
+  let el = document.getElementById('delay');
+  
+  ChickenScratch.addStyleToEl('chicken-scratch',el);
+});
+
+removeButton.addEventListener('click', function() {
+  let el = document.getElementById('delay');
+  ChickenScratch.removeStyleFromEl(el);
+})

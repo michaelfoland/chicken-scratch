@@ -41,6 +41,10 @@ specialCharMap.set('[','_leftBracket');
 specialCharMap.set(']','_rightBracket');
 specialCharMap.set('<','_lessThan');
 specialCharMap.set('>','_greaterThan');
+specialCharMap.set('~','_tilde');
+specialCharMap.set('`','_backtick');
+specialCharMap.set('_','_underscore');
+specialCharMap.set('|','_pipe');
 
 const characters = {
   a: [ 
@@ -1680,6 +1684,45 @@ const characters = {
       type: 'line',
       start: { x: 33, y: 25 },
       end: { x: 5, y: 43}
+    }
+  ],
+  _tilde: [
+    [
+      {
+        type: 'ellipse',
+        bounds: {x1: 1, y1: 21, x2: 20, y2: 33 },
+        start: Math.PI * 1,
+        end: Math.PI * 1.9,
+        direction: 'clockwise'
+      },
+      {
+        type: 'ellipse',
+        bounds: {x1: 18, y1: 16, x2: 37, y2: 28 },
+        start: Math.PI * 0.9,
+        end: Math.PI * 0,
+        direction: 'counter-clockwise'
+      }
+    ]
+  ],
+  _backtick: [
+    {
+      type: 'line',
+      start: { x: 9, y: 1},
+      end: { x: 21, y: 17 }
+    }
+  ],
+  _underscore: [
+    {
+      type: 'line',
+      start: { x: 1, y: 49 },
+      end: { x: 37, y: 49 }
+    }
+  ],
+  _pipe: [
+    {
+      type: 'line',
+      start: { x: 19, y: 1},
+      end: { x: 19, y: 49}
     }
   ]
     

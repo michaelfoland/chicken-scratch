@@ -2,14 +2,10 @@ export function getStrokes(char) {
   // handle letters
   let letterRegex = /[a-zA-Z]/;
   let numRegex = /[1-9]/; // sorry, no zero yet!
-  // let puncRegex = /[.,!?'"#$%]/;
   
   if (letterRegex.exec(char))  return characters[char];
   
   if (numRegex.exec(char)) return characters['_' + char];
-  
-  console.log('in getStrokes(), char =',char);
-  console.log('specialCharMap.get(char) =',specialCharMap.get(char));
   
   return characters[specialCharMap.get(char)];  
 }  
@@ -466,12 +462,12 @@ const characters = {
   y: [
     {
       type: 'line',
-      start: { x: 4, y: 17 },
-      end: { x: 19, y: 43 }
+      start: { x: 4, y: 19 },
+      end: { x: 18, y: 42 }
     },
     {
       type: 'line',
-      start: { x: 34, y: 17 },
+      start: { x: 34, y: 19 },
       end: { x: 9, y: 57 }
     }
   ],

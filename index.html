@@ -4,25 +4,27 @@
     <meta charset="utf-8">
     <title>Chicken Scratch Test Page</title>
     <style> 
-      canvas {
-        margin: 0;
-        padding: 0;
-      }
-      div {
-        word-wrap: break-word;
-      }
       .flex-container {
-        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
       }
-      span {
-        padding: 0 25px 0 0;
-      }
-
     </style>
   </head>
   <body>
     <div class="flex-container">
-      <span class="chicken-scratch">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 ! @ # $ % ^ & * ( ) - + = { } [ ] \ : ; " ' , . ? / &gt; &lt;</span>
+      <div class="chicken-scratch">This is the default Chicken Scratch style.</div>
+      <div class="chicken-scratch">But you can change</div>
+      <div class="cs-green" title="ChickenScratch.registerStyle('cs-green', {color: '#396'})">color,</div>
+      <div class="cs-big" title="ChickenScratch.registerStyle('cs-big', {size: 60})">size,</div>
+      <div><span class="chicken-scratch">and</span><span class="cs-heavy">stroke</span><span class="cs-light">width.</span></div>
+      <div><span class="cs-hi-rotation">Increase rotation</span><span class="cs-lo-rotation">or decrease it.</span></div>
+      <div><span class="cs-hi-translation">Same goes</span><span class="cs-lo-translation">for translations.</span></div>
+      <div><span class="cs-expand">Expand text</span><span class="cs-condense">or condense it.</span></div>
+      <div class="cs-shadow">Add shadows if you want,</div>
+      <div class="cs-boring">or just keep it plain and boring.</div>
+      <div class="cs-construction-paper">GO MESS AROUND!</div>
       <!-- 
 Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 1 2 3 4 5 6 7 8 9 ! @ # $ % ^ & * ( ) - + : ; ' " , . / ? \ = {
       <span class="chicken-scratch">this is the default chicken scratch style</span>
@@ -45,11 +47,8 @@ Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 1 
     <div class="construction-paper" style="text-align: center">GO MESS AROUND</div>
     -->
   
-    <script src="characters.js"></script>
-    <script type="module" src="chicken-scratch.js"></script>
-    <script>
-    //  registerStyle('bad-style',badStyle);
-      // canAnythingBeCalled();
-    </script>
+    <!-- <script src="characters.js"></script> -->
+    <!-- <script type="module" src="chicken-scratch.js"></script> -->
+    <script type="module" src="script.js"></script>
   </body>
 </html>

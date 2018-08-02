@@ -63,8 +63,8 @@ ChickenScratch.registerStyle('blue-style',{color: 'blue'});
 
 `maxTranslation` represents a fraction of the character size.  For a style with `size: 50, maxTranslation: .2`, no stroke will be translated more than 10 units in any direction.
 
-`lineHeight` behaves more or less like the css property of the same name.  If a style has `lineHeight: 1`, the bottom of line x will nearly touch the top of line x + 1.
+`lineHeight` behaves more or less like the css property of the same name.  If a style has `lineHeight: 1`, the bottom of line x will nearly Stouch the top of line x + 1.
 
-`letterSpacing` also represents a fraction of the character size.  If `letterSpacing: 0`, characters in a word will nearly touch.  A sufficiently large negative value will cause them to overlap.  
+`letterSpacing` also represents a fraction of the character size.  If `letterSpacing: 0`, characters in a word will touch (or nearly so).  A negative value will cause them to overlap.  
 
 

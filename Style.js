@@ -1,5 +1,6 @@
 export class Style {
   constructor(name, styleProps) {
+    
     this.name = name;
     this.camelName = kebabToCamel(name);
     
@@ -61,8 +62,11 @@ export class Style {
   get charGap() {
     return ((this.size * .75) + this.strokeWidth) * this.letterSpacing;
   }
+  
   get charHeight() {
-    return (this.size + this.strokeWidth) * this.lineHeight;
+    // NOTE: This 7/6 is to account for the extra height of lowercase
+    // letters with 'tails': g, j, p, q, and y
+    return ((this.size * (7/6)) + this.strokeWidth) * this.lineHeight;
   }
   
   get charWidth() {
@@ -110,14 +114,14 @@ export class Style {
 }
 
 const defaultProps = {
-  size: 36,
+  size: 24,
   color: 'black',
-  strokeWidth: 5,
-  maxRotation: 8,
+  strokeWidth: 3,
+  maxRotation: 12,
   maxTranslation: .08,
-  lineHeight: 1.4,
-  letterSpacing: .2,
-  lineCap: 'square',
+  lineHeight: 1.3,
+  letterSpacing: 0,
+  lineCap: 'butt',
   shadowVisibility: false, 
   shadowBlur: 6,
   shadowOffsetX: 4,

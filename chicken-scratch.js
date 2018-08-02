@@ -1,54 +1,55 @@
 import { Style } from './Style.js';
 import { getStrokes } from './characters.js';
 
-// Create style dictionary and add default style
-let styleDictionary = new Map(); 
-styleDictionary.set('chickenScratch',new Style('chicken-scratch',{}))
+export const ChickenScratch = {
+  registerStyle: registerStyle,
+  apply: apply
+  // addStyleToEl: IMPLEMENT THIS,
+  // removeStyleFromEl: IMPLEMENT THIS
+};
 
-let managedElements = new Map(); // This will hold all info needed to properly draw each text
 
 // THIS SHOULD BE PUBLIC
 function registerStyle(name, style) {
   if (name == 'chicken-scratch' || name == 'chickenScratch' ) return; // bail if user provides bad name
-  
+
+  // Create and register new style
   let newStyle = new Style(name, style);
   
-  // When done, register style
-  styleDictionary.set(style.camelName, newStyle);
+  styleDictionary.set(newStyle.camelName, newStyle);
 }
-
-
-apply();
 
 function apply() {
   // 1 FETCH ALL ELEMENTS TO MODIFY
   styleDictionary.forEach(style => {
     let originalElements = Array.from(document.getElementsByClassName(style.name));
-    
+
     // go through each element
     originalElements.forEach((originalElement, index) => {
-  
+
       // get text content, process it, store the style, generate wobbles, save it to map
       let managedElement = {}; // this name sucks; what would be better?
       managedElement.originalText = originalElement.textContent;
       managedElement.words = cleanText(originalElement.textContent).split(' ');
-      
-      console.log('originalText =',managedElement.originalText);
-      console.log('after cleaning =',managedElement.words);
-      
       managedElement.styleName = style.camelName;
       managedElement.csId = style.name + '-' + index;
       managedElement.transforms = generateStrokeTransforms(style, managedElement.words); 
       managedElements.set(style.name + '-' + index, managedElement);
-        
+
       // replace element with canvasContainer/canvas and draw
       // replaceElementAndDraw(originalElement, managedElement);
-      
+
       // NEW IMPLEMENTATION USING MULTIPLE CANVASES FOR EACH TEXT
       addCanvasesAndDraw(originalElement, managedElement);
     });
   });
 }
+
+// Create style dictionary and add default style
+let styleDictionary = new Map(); 
+styleDictionary.set('chickenScratch',new Style('chicken-scratch',{}))
+
+let managedElements = new Map(); // This will hold all info needed to properly draw each text
 
 function addCanvasesAndDraw(originalElement, managedElement) {
   // Get style from style dictionary
@@ -56,6 +57,9 @@ function addCanvasesAndDraw(originalElement, managedElement) {
   
   let style = styleDictionary.get(managedElement.styleName);
 
+  console.log('in addCanvasesAndDraw(), managedElement =',managedElement);
+  console.log('\tstyleDictionary = ',styleDictionary);
+  
   // Clean out original element and give it a csId
   originalElement.innerHTML = '';
   originalElement.dataset.csId = csId;
@@ -146,11 +150,7 @@ function generateStrokeTransforms(style, text) {
 
       // add an empty array of strokes for this char
       specs[wordIndex].push([]);
-  
-      // debug
-      console.log('word.charAt(charIndex)) =',word.charAt(charIndex));
-      // end debug
-      
+
       let strokeArray = getStrokes(word.charAt(charIndex));
       
       // go through each stroke in the strokeArray

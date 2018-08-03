@@ -50,11 +50,11 @@ let myElement = document.querySelector('#my-element');
 ChickenScratch.removeStyleFromEl(myElement);
 ```
 
-If you add a style to and element which already has a Chicken Scratch style applied, the old style will be replaced by the new one.  If you attempt to remove a style from an element which actually has no Chicken Scratch style applied
+If you add a style to and element which already has a Chicken Scratch style applied, the old style will be replaced by the new one.  If you attempt to remove a style from an element which actually has no Chicken Scratch style applied, nothing will happen.
 
 ### Writing custom styles
 
-Chicken Scratch applys a randomly generated translation and rotation to each stroke of each character of each word in an element's text content.  You specify the maximum rotation (in degrees) and the maximum translation (as a ratio of the size of a single character).  The color, width, size, letter spacing, line height, and shadows applied to the text depends on the style properties you choose.  Pass your desired style props to ChickenScratch.registerStyle() as a JS object:
+Chicken Scratch applies a randomly generated translation and rotation to each stroke of each character of each word in an element's text content.  You specify the maximum rotation (in degrees) and the maximum translation (as a ratio of the size of a single character).  The color, width, size, letter spacing, line height, and shadows applied to the text depends on the style properties you choose.  Pass your desired style props to ChickenScratch.registerStyle() as a JS object:
 
 `ChickenScratch.registerStyle('style-name',{styleProp1: value, styleProp2: value, ...});
 

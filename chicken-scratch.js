@@ -55,6 +55,10 @@ function addStyleToEl(styleName, element) {
     managedEl.csId = style.newId;
     managedEl.transforms = generateStrokeTransforms(style, managedEl.words); 
     
+    console.log('in addStyleToEl');
+    console.log('\tmanagedEl.styleName = ',managedEl.styleName);
+    console.log('\tmanagedEl.csId =', managedEl.csId);
+    
     addCanvasesAndDraw(element, managedEl);
     
   } else {
@@ -94,8 +98,8 @@ function processElement(originalElement, style) {
 }
 
 function addCanvasesAndDraw(originalElement, managedElement) {
-  let style = styleDictionary.get(managedElement.styleName);
   let { styleName, words, transforms, csId } = managedElement;
+  let style = styleDictionary.get(styleName);
   
   // Clean out original element and give it a csId
   originalElement.innerHTML = '';

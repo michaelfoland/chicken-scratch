@@ -8,6 +8,7 @@ styleDictionary.set('chicken-scratch',new Style('chicken-scratch',{}))
 // A map containing all elements with a chicken-scratch class
 let managedElements = new Map(); 
 
+// Expose public methods
 export const ChickenScratch = {
   registerStyle: registerStyle,
   apply: apply,
@@ -41,19 +42,6 @@ function apply() {
   });
 }
 
-function processElement(originalElement, style) {
-  let managedElement = {}; 
-  managedElement.originalText = originalElement.textContent;
-  managedElement.words = cleanText(originalElement.textContent).split(' ');
-  managedElement.innerHTML = originalElement.innerHTML;
-  managedElement.styleName = style.name;
-  managedElement.csId = style.newId;
-  managedElement.transforms = generateStrokeTransforms(style, managedElement.words); 
-  managedElements.set(managedElement.csId, managedElement);
-  
-  return managedElement;
-}
-
 function addStyleToEl(styleName, element) {
   // If element already has a csId
   if (element.dataset.csId) {
@@ -78,19 +66,31 @@ function addStyleToEl(styleName, element) {
 }
 
 function removeStyleFromEl(element) {
-  // Confirm that element has a csId
-  if (element.dataset.csId) {
-    // get element
-    let managedEl = managedElements.get(element.dataset.csId);
+  if (!element.dataset.csId) return; // bail if element has no csId
+    
+  // get element
+  let managedEl = managedElements.get(element.dataset.csId);
 
-    // remove item from managedElement collection,
-    // remove data-cs-id attr from element
-    managedElements.delete(managedEl.csId);
-    element.removeAttribute('data-cs-id');
+  // remove item from managedElement collection, and
+  // remove data-cs-id attr from element
+  managedElements.delete(managedEl.csId);
+  element.removeAttribute('data-cs-id');
 
-    // revert to initial html
-    element.innerHTML = managedEl.innerHTML;
-  }
+  // revert to initial html
+  element.innerHTML = managedEl.innerHTML;
+}
+
+function processElement(originalElement, style) {
+  let managedElement = {}; 
+  managedElement.originalText = originalElement.textContent;
+  managedElement.words = cleanText(originalElement.textContent).split(' ');
+  managedElement.innerHTML = originalElement.innerHTML;
+  managedElement.styleName = style.name;
+  managedElement.csId = style.newId;
+  managedElement.transforms = generateStrokeTransforms(style, managedElement.words); 
+  managedElements.set(managedElement.csId, managedElement);
+  
+  return managedElement;
 }
 
 function addCanvasesAndDraw(originalElement, managedElement) {
@@ -118,9 +118,9 @@ function addCanvasesAndDraw(originalElement, managedElement) {
     let yMargin = (0 - ((canvasSize.y - wordSize.y) / 2)) + 'px';
     newCanvas.style.margin = yMargin + ' ' + xMargin;
     
-    drawWord(newCanvas, style, word, transforms[index])
-    
+    drawWord(newCanvas, style, word, transforms[index]);
     originalElement.appendChild(newCanvas);
+    originalElement.style.visibility = 'visible';
   });
 }
 
@@ -134,9 +134,8 @@ function drawWord(canvas, style, word, transforms) {
     // get char and strokes
     let char = word.charAt(charIndex);
     let strokes = getStrokes(char);
-    
+
     let charOffset = calculateCharOffsetInWord(style, charIndex);
-    
     
     // go through each stroke
     strokes.forEach((stroke, strokeIndex) => {
@@ -217,12 +216,8 @@ function applyStyleToContext(style, ctx) {
   }
 }
 
-
-// probably move this to character.js soon as well
 function cleanText(text) {
-    // text = text.toUpperCase(); // for now only; change this when we add lowercase
-  
-    let regex1 = /[^a-zA-Z1-9\s.,!?'"#$%@^&*()\-+=:;\\\/<>{}\[\]]~`_|/g; // preserve only whitespace, capitals, and numbers 1-9 and periods
+    let regex1 = /[^\d\w\s`~!@#$%&*()_=+{}|:;"',<.>?/\\\[\]\^]/g; 
     text = text.replace(regex1,'');
   
     // reduce each group of consecutive whitespace chars down to one single space
@@ -306,7 +301,7 @@ function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
       a = start,
       pi2 = Math.PI * 2 - step;
 
-  ctx.lineWidth -= 1; // maybe update this in the future
+  ctx.lineWidth *= .5;
 
   ctx.moveTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));
 
@@ -318,8 +313,7 @@ function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
     for (; a < end; a += step) {
       ctx.lineTo(centerX + radiusX * Math.cos(a), centerY + radiusY * Math.sin(a));  
     }
-  // we'll just assume everything not clockwise is counter-clockwise
-  } else {
+  } else if (direction === 'counter-clockwise') {
       if (end > start) {
         end -= Math.PI * 2;
       }
@@ -329,7 +323,7 @@ function drawEllipse(ctx, x1, y1, x2, y2, start, end, direction) {
     }
   }
   
-  ctx.lineWidth += 1; // maybe update this in the future
+  ctx.lineWidth *= 2;
 }
 
 function drawStartingLinecap(context, style, stroke, offset) {
@@ -429,7 +423,6 @@ function getLineCapAnchors(startOrEnd, stroke, offset) {
           yChange = -0.1;
         }
       } else {
-        // find slope
         slope = (stroke.start.y - stroke.end.y) / (stroke.start.x - stroke.end.x);
 
         yChange = xChange * slope;
@@ -457,7 +450,6 @@ function getLineCapAnchors(startOrEnd, stroke, offset) {
           yChange = 0.1;
         }
       } else {
-        // find slope
         slope = (stroke.start.y - stroke.end.y) / (stroke.start.x - stroke.end.x);
         
         yChange = xChange * slope;

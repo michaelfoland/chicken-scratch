@@ -3,7 +3,6 @@ export class Style {
     
     this.name = name;
     this.instances = 0;
-    // this.camelName = kebabToCamel(name);
     
     // Go through each key in the default props
     // and validate it on the test style
@@ -12,11 +11,12 @@ export class Style {
       // if property is invalid (i.e., not set or
       // set to an inappropriate value)
       if (!propertyIsValid(styleProps, key)) {
+
         // ...set it to the value of the default style
         this[key] = defaultProps[key];
         
       } else {
-        // otherwise set it to the value passed in
+        // otherwise set it to the value passed in styleProps
         this[key] = styleProps[key];
       }
     }
@@ -58,12 +58,9 @@ export class Style {
     };
   }
 
-  // NOTE: This was originally called letterSpacing, but we
-  // already have a prop on Style called letterSpacing
   get newId() {
     this.instances++;
     return this.name + '-' + this.instances;
-    
   }
   
   get charGap() {
@@ -121,14 +118,14 @@ export class Style {
 }
 
 const defaultProps = {
-  size: 48,
+  size: 32,
   color: 'black',
-  strokeWidth: 2,
-  maxRotation: 0,
-  maxTranslation: .0,
+  strokeWidth: 5,
+  maxRotation: 12,
+  maxTranslation: .08,
   lineHeight: 1.3,
-  letterSpacing: 0,
-  lineCap: 'butt',
+  letterSpacing: 0.1,
+  lineCap: 'square',
   shadowVisibility: false, 
   shadowBlur: 6,
   shadowOffsetX: 4,

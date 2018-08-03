@@ -4,54 +4,65 @@
     <meta charset="utf-8">
     <title>Chicken Scratch Test Page</title>
     <style> 
+      .chicken-scratch {
+        transition: all 250ms linear;
+        visibility: hidden;
+      }
+      .chicken-scratch:hover {
+        background-color: #d8d8d8;
+      }
+      .pre-apply {
+        visibility: hidden;
+      }
+      div {
+        padding: 0;
+        margin: 5px 0;
+      }
       .flex-container {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
       }
+      .flex-container > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+      }
     </style>
   </head>
   <body>
     <div class="flex-container">
-      <div class="chicken-scratch">~`!@#$%^&*()-_|</div>
-      
-      <!-- 
-      <div class="chicken-scratch">But you can change</div>
-      <div class="cs-green" title="ChickenScratch.registerStyle('cs-green', {color: '#396'})">color,</div>
-      <div class="cs-big" title="ChickenScratch.registerStyle('cs-big', {size: 60})">size,</div>
-      <div><span class="chicken-scratch">and</span><span class="cs-heavy">stroke</span><span class="cs-light">width.</span></div>
-      <div><span class="cs-hi-rotation">Increase rotation</span><span class="cs-lo-rotation">or decrease it.</span></div>
-      <div><span class="cs-hi-translation">Same goes</span><span class="cs-lo-translation">for translations.</span></div>
-      <div><span class="cs-expand">Expand text</span><span class="cs-condense">or condense it.</span></div>
-      <div class="cs-shadow">Add shadows if you want,</div>
-      <div class="cs-boring">or just keep it plain and boring.</div>
-      <div class="cs-construction-paper">GO MESS AROUND!</div>
--->
-      <!-- 
-Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 1 2 3 4 5 6 7 8 9 ! @ # $ % ^ & * ( ) - + : ; ' " , . / ? \ = {
-      <span class="chicken-scratch">this is the default chicken scratch style</span>
-      <span class="chicken-scratch-small">but you can change size</span>
-      <span class="chicken-scratch-green">And you can change color</span>
-      <span class="chicken-scratch-fat">And font weight</span>
-      <span class="chicken-scratch-thin">aka line width</span>
-      <span class="chicken-scratch-shadow">You can add shadows</span>
-      <span class="chicken-scratch-high-translation">Increase translation</span>
-      <span class="chicken-scratch-low-translation">or decrease it</span>
-      <span class="chicken-scratch-high-rotation">Same goes</span>
-      <span class="chicken-scratch-low-rotation">for rotation</span>
-      <span class="chicken-scratch-expanded">You can expand text</span>
-      <span class="chicken-scratch-condensed">Or condense it</span>
-      <span class="chicken-scratch-straight">Or just keep it straight and boring</span>
--->
+      <div class="chicken-scratch">THIS IS THE DEFAULT STYLE</div>
+      <div class="chicken-scratch">BUT YOU CAN CHANGE</div>
+      <div>
+        <span class="pre-apply cs-green" title="ChickenScratch.registerStyle('cs-green', {color: '#396'})">COLOR,</span>
+        <span class="pre-apply cs-big custom-style" title="ChickenScratch.registerStyle('cs-big', {size: 60})">SIZE,</span>
+        <span class="chicken-scratch">AND</span>
+        <span class="pre-apply cs-heavy custom-style" title="ChickenScratch.registerStyle('cs-heavy',{strokeWidth: 8})">STROKE</span>
+        <span class="pre-apply cs-light custom-style" title="ChickenScratch.registerStyle('cs-light',{strokeWidth: 2})">WIDTH.</span></div>
     </div>
+    <hr>
+    <div class="flex-container">
+      <div>
+        <span class="pre-apply cs-hi-transform" title="ChickenScratch.registerStyle('cs-hi-transform',{maxRotation: 20, maxTranslation: .14, color: '#933', size: 24})">SHAKE IT UP A LITTLE MORE</span>
+        <span class="pre-apply cs-lo-transform" title=".registerStyle('cs-lo-transform',{maxRotation: 8, maxTranslation: .04, color: '#393', size: 24})">OR A LITTLE LESS</span>
+      </div>
+      <div>
+        <span class="pre-apply cs-expand" title=".registerStyle('cs-expand',{letterSpacing: .6, color: '#639', size: 24})">EXPAND TEXT</span>
+        <span class="pre-apply cs-condense" title="ChickenScratch.registerStyle('cs-condense',{letterSpacing: 0, color: '#cc2', size: 24})">OR CONDENSE IT.</span>
+      </div>
+      <div class="pre-apply cs-shadow" title="ChickenScratch.registerStyle('cs-shadow',{shadowVisibility: true, shadowOffsetX: 5, shadowOffsetY: 3, shadowBlur: 3, shadowColor: '#bcd', size: 24})">ADD SHADOWS IF YOU WANT</div>
+      <div class="pre-apply cs-boring" title=".registerStyle('cs-boring',{strokeWidth: 2, maxRotation: 0, maxTranslation: 0, letterSpacing: 0.2, size: 24 })">OR JUST KEEP IT NICE AND SIMPLE.</div>
+    </div>
+    <hr>
+    <div class="pre-apply cs-small" style="text-align: center;">CAPS LOOK BEST, but you can also use lowercase letters, numbers, or anything ASCII !@#$%^&*()</div>
+      
+    <hr> 
+    <div class="pre-apply cs-construction-paper" style="text-align: center;">GO MESS AROUND!</div>
     
-    <!-- 
-    <div class="construction-paper" style="text-align: center">GO MESS AROUND</div>
-    -->
-  
-    <!-- <script src="characters.js"></script> -->
-    <!-- <script type="module" src="chicken-scratch.js"></script> -->
     <script type="module" src="script.js"></script>
   </body>
 </html>

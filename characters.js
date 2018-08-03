@@ -1,15 +1,12 @@
 export function getStrokes(char) {
-  // handle letters
   let letterRegex = /[a-zA-Z]/;
-  let numRegex = /[1-9]/; // sorry, no zero yet!
-  
   if (letterRegex.exec(char))  return characters[char];
   
+  let numRegex = /[0-9]/;
   if (numRegex.exec(char)) return characters['_' + char];
   
   return characters[specialCharMap.get(char)];  
 }  
-
 
 const specialCharMap = new Map();
   
@@ -1725,8 +1722,4 @@ const characters = {
       end: { x: 19, y: 49}
     }
   ]
-    
-  
 };
-
-

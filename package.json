@@ -1,6 +1,6 @@
 {
   "name": "chicken-scratch",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A JavaScript module that takes the text content of an HTML element and draws it on canvas elements in a style that looks like messy  handwriting.",
   "main": "chicken-scratch.js",
   "scripts": {

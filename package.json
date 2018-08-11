@@ -4,7 +4,9 @@
   "description": "A JavaScript module that takes the text content of an HTML element and draws it on canvas elements in a style that looks like messy  handwriting.",
   "main": "chicken-scratch.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel:test": "babel src --out-dir dist",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -13,13 +15,21 @@
   "keywords": [
     "javascript",
     "canvas",
-    "\"text",
-    "effects\""
+    "text effects"
   ],
   "author": "Michael Foland",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/michaelfoland/chicken-scratch/issues"
   },
-  "homepage": "https://github.com/michaelfoland/chicken-scratch#readme"
+  "homepage": "https://github.com/michaelfoland/chicken-scratch#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  }
 }

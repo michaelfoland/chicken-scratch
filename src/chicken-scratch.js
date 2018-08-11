@@ -9,7 +9,7 @@ styleDictionary.set('chicken-scratch',new Style('chicken-scratch',{}))
 let managedElements = new Map(); 
 
 // Expose public methods
-export const ChickenScratch = {
+export default {
   registerStyle: registerStyle,
   apply: apply,
   addStyleToEl: addStyleToEl,
@@ -54,10 +54,6 @@ function addStyleToEl(styleName, element) {
     managedEl.styleName = style.name;
     managedEl.csId = style.newId;
     managedEl.transforms = generateStrokeTransforms(style, managedEl.words); 
-    
-    console.log('in addStyleToEl');
-    console.log('\tmanagedEl.styleName = ',managedEl.styleName);
-    console.log('\tmanagedEl.csId =', managedEl.csId);
     
     addCanvasesAndDraw(element, managedEl);
     

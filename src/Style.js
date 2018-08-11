@@ -175,43 +175,12 @@ function propertyIsValid(style, propName) {
   return false;
 }
 
-// I'm sure there's a better way to implement
-// this, probably with Regexp, but this was what came to mind at the time
-/*
-function kebabToCamel(kebab) {
-  // find all hyphens
-  let index = 0;
-  let hyphenLocations = [];
-  
-  while(kebab.indexOf('-',index) != '-1') {
-    
-    hyphenLocations.push(kebab.indexOf('-',index));
-    
-    index = hyphenLocations[hyphenLocations.length - 1] + 1;
-  }
-  
-  if (hyphenLocations.length == 0) return kebab; // bail if there are no hyphens
-  
-  // capitalize letters following hyphens
-  hyphenLocations.forEach((location, index) => {
-    if (location != kebab.length - 1) {
-      kebab = kebab.replace(kebab.substr(location,2), '-' + kebab.substr(location + 1, 1).toUpperCase());
-    }
-  });
-  
-  // remove all hyphens
-  kebab = kebab.replace(/-/g,'');
-
-  return kebab;
-}
-*/
-
 function colorIsValid(testColor) {
   let  returnVal = false;
-  // Create an element and append it to body
-  let body = document.getElementsByTagName('body')[0]
   
-  let colorChecker = document.createElement('div');
+  // Create element and append it to body
+  let body = document.getElementsByTagName('body')[0]
+    let colorChecker = document.createElement('div');
   colorChecker.style.position = 'absolute';
   colorChecker.style.opacity = 0;
   body.appendChild(colorChecker);
@@ -221,14 +190,17 @@ function colorIsValid(testColor) {
   let originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
   colorChecker.style.color = testColor;
   let updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
-  if (updatedColor != originalColor) returnVal = true;
-  
-  // if necessary, test again with a different original color
-  colorChecker.style.color = 'rgb(0,0,0)';
-  originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
-  colorChecker.style.color = testColor;
-  updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
-  if (updatedColor != originalColor) returnVal = true;
+  if (updatedColor != originalColor) {
+    returnVal = true;
+  } else {
+    // if necessary, test again with a different original color
+    // This is to catch the case where testColor is rgb(255,255,255);
+    colorChecker.style.color = 'rgb(0,0,0)';
+    originalColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+    colorChecker.style.color = testColor;
+    updatedColor = window.getComputedStyle(colorChecker).getPropertyValue('color');
+    if (updatedColor != originalColor) returnVal = true;
+  }
   
   body.removeChild(colorChecker);
   

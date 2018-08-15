@@ -112,12 +112,13 @@ function addCanvasesAndDraw(originalElement, managedElement) {
     newCanvas.dataset.csId = managedElement.csId + '-canvas-' + index;
     newCanvas.width = canvasSize.x;
     newCanvas.height = canvasSize.y;
-
+    newCanvas.style.display = 'inline-block';  
+    
     // set canvas margins to produce appropriate word spacing and line height
     let xMargin = ((charWidth / 2) - ((canvasSize.x - wordSize.x) / 2)) + 'px';
     let yMargin = (0 - ((canvasSize.y - wordSize.y) / 2)) + 'px';
     newCanvas.style.margin = yMargin + ' ' + xMargin;
-    
+
     drawWord(newCanvas, style, word, transforms[index]);
     originalElement.appendChild(newCanvas);
     originalElement.style.visibility = 'visible';
@@ -217,7 +218,7 @@ function applyStyleToContext(style, ctx) {
 }
 
 function cleanText(text) {
-    let regex1 = /[^\d\w\s`~!@#$%&*()_=+{}|:;"',<.>?/\\\[\]\^]/g; 
+    let regex1 = /[^\d\w\s`~!@#$%&*()\-_=+{}|:;"',<.>?/\\\[\]\^]/g; 
     text = text.replace(regex1,'');
   
     // reduce each group of consecutive whitespace chars down to one single space

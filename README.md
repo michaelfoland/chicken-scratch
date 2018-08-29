@@ -2,6 +2,8 @@
 ---
 A JavaScript module that takes the text content of an HTML element and renders it on canvas elements in a style that looks like messy handwriting.  It's useful for adding some funk to titles, headings, slogans, and the like.
 
+![Image of default Chicken Scratch style] (./ghp-src/images/cs-default.png)
+
 ## Getting Started
 
 ### Installation

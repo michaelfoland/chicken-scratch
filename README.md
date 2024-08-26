@@ -62,7 +62,7 @@ If you add a style to and element which already has a Chicken Scratch style appl
 
 Chicken Scratch applies a randomly generated translation and rotation to each stroke of each character of each word in an element's text content.  You specify the maximum rotation (in degrees) and the maximum translation (as a ratio of the size of a single character).  The color, width, size, letter spacing, line height, and shadows applied to the text also depend on the style properties you choose.  Pass your desired style props to chickenScratch.registerStyle() as a JS object:
 
-`ChickenScratch.registerStyle('style-name',{styleProp1: value, styleProp2: value, ...});
+`ChickenScratch.registerStyle('style-name',{styleProp1: value, styleProp2: value, ...});`
 
 
 Below are the various style properties you can define in your custom style and their default values:
